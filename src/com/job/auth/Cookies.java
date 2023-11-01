@@ -1,4 +1,4 @@
-package auth;
+package com.job.auth;
 
 import javax.servlet.http.Cookie;
 
