@@ -6,9 +6,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 public class DBUtil {
     private static Connection connection = null;
+
+    private static Logger logger = Logger.getLogger(DBUtil.class.getName());
 
     public static Connection getConnection() {
         if (connection != null)
@@ -25,7 +28,7 @@ public class DBUtil {
                 Class.forName(driver);
                 connection = DriverManager.getConnection(url, user, password);
             } catch (ClassNotFoundException | SQLException | IOException e) {
-                e.printStackTrace();
+                logger.warning(e.getMessage());
             }
             return connection;
         }
