@@ -5,9 +5,9 @@ import java.sql.*;
 public class ConnectMysql {
     private Connection conn = null;
     public void createConnect(){
-        String dburl  = "jdbc:mysql://127.0.0.1:3306/job?useSSL=false&serverTimezone=UTC";
+        String dburl  = "jdbc:mysql://127.0.0.1:3306/homework_management?useSSL=false&serverTimezone=UTC";
         String username ="root";
-        String password = "xxxx";
+        String password = "123456";
         try{
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(dburl,username,password);
@@ -39,13 +39,14 @@ public class ConnectMysql {
             PreparedStatement statement = conn.prepareStatement(sql);
             // 执行查询语句
             resultSet = statement.executeQuery();
-//            // 处理查询结果
-//            while (resultSet.next()) {
-//                // 处理每一行数据
-//                int id = resultSet.getInt("id");
-//                String name = resultSet.getString("name");
-//                System.out.println("id: " + id + ", name: " + name);
-//            }
+            // 处理查询结果
+            while (resultSet.next()) {
+                // 取出元素
+                String number = resultSet.getString(2);
+                String name = resultSet.getString(4);
+                String stuClass = resultSet.getString(5);
+                System.out.println(number + "-" + name + "-" + stuClass);
+            }
             // 关闭结果集
             resultSet.close();
             // 关闭预编译的语句
