@@ -6,7 +6,6 @@ import com.job.util.Base64Util;
 import com.job.util.MD5Generate;
 import com.job.util.ResponseData;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +17,6 @@ import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 
 @WebServlet("/student/*")
@@ -93,19 +91,16 @@ public class StudentController extends HttpServlet {
                 String studentInfo;
                 try {
                     studentInfo = Base64Util.decryBASE64(cookie.getValue());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                System.out.println("解密后信息:\t" + studentInfo);
-                String studentName = studentInfo.split("==")[0];
-                String studentId = studentInfo.split("==")[1];
-                Student student;
-                try {
+                    System.out.println("解密后信息:\t" + studentInfo);
+                    String studentName = studentInfo.split("==")[0];
+                    String studentId = studentInfo.split("==")[1];
+                    Student student;
                     student = studentDao.verify(Integer.parseInt(studentId), studentName);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    return student != null;
+                } catch (Exception e) {
+                    System.out.println("验证失败");
+                    e.printStackTrace();
                 }
-                return student != null;
             }
         }
         return false;
