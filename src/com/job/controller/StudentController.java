@@ -1,5 +1,6 @@
 package com.job.controller;
 
+import com.job.auth.Authority;
 import com.job.dao.StudentDao;
 import com.job.model.Student;
 import com.job.util.Base64Util;
@@ -47,9 +48,12 @@ public class StudentController extends HttpServlet {
      */
     private final StudentDao studentDao;
 
+    private final Authority authority;
+
     public StudentController() {
         super();
         this.studentDao = new StudentDao();
+        this.authority = new Authority();
     }
 
     /*
@@ -78,40 +82,13 @@ public class StudentController extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
-    /*
-        验证cookie身份
-     */
-    private Boolean verify(HttpServletRequest req){
-        Cookie[] cookies = req.getCookies();
-        if (cookies == null){
-            return false;
-        }
-        for (Cookie cookie: cookies){
-            if(cookie.getName().equals("jobCookie")){
-                String studentInfo;
-                try {
-                    studentInfo = Base64Util.decryBASE64(cookie.getValue());
-                    System.out.println("解密后信息:\t" + studentInfo);
-                    String studentName = studentInfo.split("==")[0];
-                    String studentId = studentInfo.split("==")[1];
-                    Student student;
-                    student = studentDao.verify(Integer.parseInt(studentId), studentName);
-                    return student != null;
-                } catch (Exception e) {
-                    System.out.println("验证失败");
-                    e.printStackTrace();
-                }
-            }
-        }
-        return false;
-    }
 
     /*
         通过id查找用户
      */
     private void queryStudentById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
-        if (!verify(req)){
+        if (!authority.verify(req)){
             responseData.writeResponseData(resp, 403, "verify fail", "");
         }
 
@@ -135,7 +112,7 @@ public class StudentController extends HttpServlet {
             if (student == null) {
                 responseData.writeResponseData(resp, "username or password is invalid");
             } else {
-                String studentInfo= student.getStudentName() + "==" + student.getStudentId();
+                String studentInfo= student.getStudentName() + "==" + student.getStudentId() + "==student";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(studentInfo));
                 System.out.println(Base64Util.encryptBASE64(studentInfo));
                 cookie.setMaxAge(60 * 60 * 24);
@@ -156,7 +133,7 @@ public class StudentController extends HttpServlet {
         MD5Generate md5 = new MD5Generate();
         Student student = new Student();
         ResponseData responseData = new ResponseData();
-        if (!verify(req)){
+        if (!authority.verify(req)){
             responseData.writeResponseData(resp, 403, "verify fail", "");
         }
         try {
