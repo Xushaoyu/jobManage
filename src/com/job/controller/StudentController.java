@@ -6,7 +6,6 @@ import com.job.util.Base64Util;
 import com.job.util.MD5Generate;
 import com.job.util.ResponseData;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +17,6 @@ import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 
 @WebServlet("/student/*")
@@ -31,7 +29,7 @@ public class StudentController extends HttpServlet {
     /*
         日志输出对象
      */
-    private static final Logger logger = Logger.getLogger(StudentController.class.getName());
+//    private static final Logger logger = Logger.getLogger(StudentController.class.getName());
 
     /*
         设置每个接口对应方法
@@ -57,7 +55,7 @@ public class StudentController extends HttpServlet {
     /*
         方法映射
      */
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String method = req.getMethod();
         // 获取请求的URI地址信息
         String url = req.getRequestURI();
@@ -68,7 +66,7 @@ public class StudentController extends HttpServlet {
             resp.getWriter().println("404");
             return;
         }
-        Method func = null;
+        Method func;
         try {
             // 使用反射机制获取在本类中声明了的方法
             func = getClass().getDeclaredMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
@@ -83,29 +81,26 @@ public class StudentController extends HttpServlet {
     /*
         验证cookie身份
      */
-    private Boolean verify(HttpServletRequest req, HttpServletResponse resp){
+    private Boolean verify(HttpServletRequest req){
         Cookie[] cookies = req.getCookies();
         if (cookies == null){
             return false;
         }
         for (Cookie cookie: cookies){
             if(cookie.getName().equals("jobCookie")){
-                String studentInfo = null;
+                String studentInfo;
                 try {
                     studentInfo = Base64Util.decryBASE64(cookie.getValue());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                System.out.println("解密后信息:\t" + studentInfo);
-                String studentName = studentInfo.split("==")[0];
-                String studentId = studentInfo.split("==")[1];
-                Student student = null;
-                try {
+                    System.out.println("解密后信息:\t" + studentInfo);
+                    String studentName = studentInfo.split("==")[0];
+                    String studentId = studentInfo.split("==")[1];
+                    Student student;
                     student = studentDao.verify(Integer.parseInt(studentId), studentName);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    return student != null;
+                } catch (Exception e) {
+                    System.out.println("验证失败");
+                    e.printStackTrace();
                 }
-                return student != null;
             }
         }
         return false;
@@ -114,9 +109,9 @@ public class StudentController extends HttpServlet {
     /*
         通过id查找用户
      */
-    private void queryStudentById(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void queryStudentById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
-        if (!verify(req, resp)){
+        if (!verify(req)){
             responseData.writeResponseData(resp, 403, "verify fail", "");
         }
 
@@ -131,7 +126,7 @@ public class StudentController extends HttpServlet {
     /*
         通过学号和密码登录
      */
-    private void login(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
         MD5Generate md5 = new MD5Generate();
         String password = md5.encode(req.getParameter("password"));
@@ -157,11 +152,11 @@ public class StudentController extends HttpServlet {
     /*
         新增学生(注册)
      */
-    private void addStudent(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void addStudent(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         MD5Generate md5 = new MD5Generate();
         Student student = new Student();
         ResponseData responseData = new ResponseData();
-        if (!verify(req, resp)){
+        if (!verify(req)){
             responseData.writeResponseData(resp, 403, "verify fail", "");
         }
         try {
@@ -173,14 +168,12 @@ public class StudentController extends HttpServlet {
             student.setStudentClass(req.getParameter("studentClass"));
         } catch (Exception e) {
             responseData.writeResponseData(resp, 400, "params is invalid", e.getMessage());
-            return;
         }
         try {
             studentDao.addStudent(student);
         } catch (SQLException e) {
             // 新增失败时返回失败
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
-            return;
         }
         responseData.writeResponseData(resp, "新增成功");
     }
