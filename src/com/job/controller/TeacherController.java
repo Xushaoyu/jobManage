@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Objects;
@@ -125,7 +126,7 @@ public class TeacherController extends HttpServlet {
     /*
         通过学号和密码登录
      */
-    private void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, NoSuchAlgorithmException {
         ResponseData responseData = new ResponseData();
         MD5Generate md5 = new MD5Generate();
         String password = md5.encode(req.getParameter("teacher_password"));
