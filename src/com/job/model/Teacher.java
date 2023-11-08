@@ -4,7 +4,7 @@ import java.util.Date;
 
 public class Teacher {
     private int teacherId;
-    private int teacherNumber;
+    private String teacherNumber;
     private String teacherPassword;
     private String teacherName;
     private int teacherAssignmentId;
@@ -15,62 +15,68 @@ public class Teacher {
         return teacherId;
     }
 
-    public Teacher setTeacherId(int teacherId) {
+    public void setTeacherId(int teacherId) {
         this.teacherId = teacherId;
-        return this;
     }
 
-    public int getTeacherNumber() {
+    public String getTeacherNumber() {
         return teacherNumber;
     }
 
-    public Teacher setTeacherNumber(int teacherNumber) {
+    public void setTeacherNumber(String teacherNumber) {
         this.teacherNumber = teacherNumber;
-        return this;
     }
 
     public String getTeacherPassword() {
         return teacherPassword;
     }
 
-    public Teacher setTeacherPassword(String teacherPassword) {
+    public void setTeacherPassword(String teacherPassword) {
         this.teacherPassword = teacherPassword;
-        return this;
     }
 
     public String getTeacherName() {
         return teacherName;
     }
 
-    public Teacher setTeacherName(String teacherName) {
+    public void setTeacherName(String teacherName) {
         this.teacherName = teacherName;
-        return this;
     }
 
     public int getTeacherAssignmentId() {
         return teacherAssignmentId;
     }
 
-    public Teacher setTeacherAssignmentId(int teacherAssignmentId) {
+    public void setTeacherAssignmentId(int teacherAssignmentId) {
         this.teacherAssignmentId = teacherAssignmentId;
-        return this;
     }
 
     public Date getUpdateTime() {
         return updateTime;
     }
 
-    public Teacher setUpdateTime(Date updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
-        return this;
     }
 
     public Date getCreateTime() {
         return createTime;
     }
 
-    public Teacher setCreateTime(Date createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
-        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "teacherId=" + teacherId +
+                ", teacherNumber=" + teacherNumber +
+                ", teacherPassword='" + teacherPassword + '\'' +
+                ", teacherName='" + teacherName + '\'' +
+                ", teacherAssignmentId=" + teacherAssignmentId +
+                ", updateTime=" + updateTime +
+                ", createTime=" + createTime +
+                '}';
     }
 }
