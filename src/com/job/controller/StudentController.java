@@ -40,7 +40,7 @@ public class StudentController extends HttpServlet {
     static {
         urlMethodMap.put("queryStudentById", "GET");
         urlMethodMap.put("login", "GET");
-        urlMethodMap.put("addStudent", "POST");
+        urlMethodMap.put("register", "POST");
     }
 
     /*
@@ -88,8 +88,9 @@ public class StudentController extends HttpServlet {
      */
     private void queryStudentById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
-        if (!authority.verify(req)){
+        if (!authority.verify(req)) {
             responseData.writeResponseData(resp, 403, "verify fail", "");
+            return;
         }
 
         try {
@@ -106,13 +107,13 @@ public class StudentController extends HttpServlet {
     private void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
         MD5Generate md5 = new MD5Generate();
-        String password = md5.encode(req.getParameter("password"));
         try {
+            String password = md5.encode(req.getParameter("password"));
             Student student = studentDao.login(req.getParameter("studentNumber"), password);
             if (student == null) {
                 responseData.writeResponseData(resp, "username or password is invalid");
             } else {
-                String studentInfo= student.getStudentName() + "==" + student.getStudentId() + "==student";
+                String studentInfo = student.getStudentName() + "==" + student.getStudentId() + "==student";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(studentInfo));
                 System.out.println(Base64Util.encryptBASE64(studentInfo));
                 cookie.setMaxAge(60 * 60 * 24);
@@ -122,20 +123,17 @@ public class StudentController extends HttpServlet {
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            responseData.writeResponseData(resp, 400, "login fail", e.getMessage());
         }
     }
 
     /*
         新增学生(注册)
      */
-    private void addStudent(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         MD5Generate md5 = new MD5Generate();
         Student student = new Student();
         ResponseData responseData = new ResponseData();
-        if (!authority.verify(req)){
-            responseData.writeResponseData(resp, 403, "verify fail", "");
-        }
         try {
             //校验参数是否正确
             String password = md5.encode(req.getParameter("password"));
@@ -145,12 +143,14 @@ public class StudentController extends HttpServlet {
             student.setStudentClass(req.getParameter("studentClass"));
         } catch (Exception e) {
             responseData.writeResponseData(resp, 400, "params is invalid", e.getMessage());
+            return;
         }
         try {
             studentDao.addStudent(student);
         } catch (SQLException e) {
             // 新增失败时返回失败
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
+            return;
         }
         responseData.writeResponseData(resp, "新增成功");
     }

@@ -83,7 +83,6 @@ public class Authority {
                     }
                 } catch (Exception e) {
                     System.out.println("验证失败");
-                    e.printStackTrace();
                 }
             }
         }

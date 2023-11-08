@@ -1,32 +1,28 @@
 package com.job.util;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class MD5Generate {
     /**
      * 生成MD5
      *
-     * @param str
-     * @return
+     * @param str 待加密字符串
+     * @return  加密后字符串
      */
-    public String encode(String str) {
-        byte[] result = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(str.getBytes("UTF-8"));
-            result = md.digest();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public String encode(String str) throws NoSuchAlgorithmException {
+        byte[] result;
+        MessageDigest md = MessageDigest.getInstance("MD5");
+        md.update(str.getBytes(StandardCharsets.UTF_8));
+        result = md.digest();
         return parseByte2HexStr(result);
     }
 
     /**
      * 将二进制转换成十六进制
      *
-     * @param buf
+     * @param buf 待转换数据
      * @return 生成的十六进制数据
      */
     private String parseByte2HexStr(byte[] buf) {
