@@ -16,6 +16,9 @@ public class BaseController extends HttpServlet {
 
     private final Authority authority;
 
+    /*
+        子类重写父类方法，参考https://blog.51cto.com/u_5650011/5386958
+     */
     protected HashMap<String, String> urlMethodMap;
 
     protected BaseController(){
