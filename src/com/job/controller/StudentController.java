@@ -69,7 +69,7 @@ public class StudentController extends BaseController {
         MD5Generate md5 = new MD5Generate();
         try {
             String password = md5.encode(req.getParameter("password"));
-            Student student = studentDao.login(req.getParameter("studentNumber"), password);
+            Student student = studentDao.login(req.getParameter("studentNumber"), password);//请求带进来的参数
             if (student == null) {
                 responseData.writeResponseData(resp, "username or password is invalid");
             } else {
