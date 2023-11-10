@@ -1,31 +1,27 @@
 package com.job.controller;
 
-
-import com.job.dao.AssignmentDao;
-import com.job.dao.SubmissionDao;
+import com.job.auth.Authority;
 import com.job.dao.TeacherDao;
-import com.job.model.Assignment;
 import com.job.model.Teacher;
-import com.job.model.subDTO;
-import com.job.util.*;
+import com.job.util.Base64Util;
+import com.job.util.MD5Generate;
+import com.job.util.ResponseData;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Objects;
 
 @WebServlet("/teacher/*")
-public class TeacherController extends BaseController {
+public class TeacherController extends HttpServlet {
     /*
         生成接口唯一标识符
      */
@@ -39,33 +35,92 @@ public class TeacherController extends BaseController {
     /*
         设置每个接口对应方法
      */
-    protected HashMap<String, String> urlMethodMap = new HashMap<>();
+    private static final HashMap<String, String> urlMethodMap = new HashMap<>();
+
+    static {
+        urlMethodMap.put("queryTeacherById", "GET");
+        urlMethodMap.put("login", "GET");
+        urlMethodMap.put("addTeacher", "POST");
+    }
 
     /*
         引入接口使用的ORM操作对象
      */
     private final TeacherDao teacherDao;
-    private final AssignmentDao assignmentDao;
-    private final SubmissionDao submissionDao;
+
+    private final Authority authority;
 
 
     public TeacherController() {
         super();
         this.teacherDao = new TeacherDao();
-        this.assignmentDao = new AssignmentDao();
-        this.submissionDao = new SubmissionDao();
-        this.urlMethodMap.put("queryTeacherById", "GET");
-        this.urlMethodMap.put("login", "GET");
-        this.urlMethodMap.put("register", "POST");
-        this.urlMethodMap.put("publishJob", "POST");
-        this.urlMethodMap.put("querySubDTO", "GET");
-        this.urlMethodMap.put("mark", "POST");
-        super.urlMethodMap = urlMethodMap;
+        this.authority = new Authority();
     }
 
-    //通过id查找老师
-    public void queryTeacherById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    /*
+        方法映射
+     */
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        String method = req.getMethod();
+        // 获取请求的URI地址信息
+        String url = req.getRequestURI();
+        // 截取其中的方法名
+        String methodName = url.substring(url.lastIndexOf("/") + 1);
+        System.out.printf("current url: %s, method: %s\n", methodName, urlMethodMap.get(methodName));
+        if (!Objects.equals(urlMethodMap.get(methodName), method)) {
+            resp.getWriter().println("404");
+            return;
+        }
+        Method func;
+        try {
+            // 使用反射机制获取在本类中声明了的方法
+            func = getClass().getDeclaredMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
+            // 执行方法
+            func.invoke(this, req, resp);
+        } catch (NoSuchMethodException e) {
+            resp.getWriter().println("404");
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    /*
+        验证cookie身份
+     */
+    private Boolean verify(HttpServletRequest req){
+        Cookie[] cookies = req.getCookies();
+        if (cookies == null){
+            return false;
+        }
+        for (Cookie cookie: cookies){
+            if(cookie.getName().equals("jobCookie")){
+                String teacherInfo;
+                try {
+                    teacherInfo = Base64Util.decryBASE64(cookie.getValue());
+                    System.out.println("解密后信息:\t" + teacherInfo);
+                    String teacherName = teacherInfo.split("==")[0];
+                    String teacherId = teacherInfo.split("==")[1];
+                    Teacher teacher;
+                    teacher = teacherDao.verify(Integer.parseInt(teacherId), teacherName);
+                    return teacher != null;
+                } catch (Exception e) {
+                    System.out.println("验证失败");
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
+
+    /*
+        通过id查找用户
+     */
+    private void queryTeacherById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
+        if (!authority.verify(req)) {
+            responseData.writeResponseData(resp, 403, "verify fail", "");
+            return;
+        }
+
         try {
             Teacher teacher = teacherDao.getTeacherById(Integer.parseInt(req.getParameter("teacherId")));
             responseData.writeResponseData(resp, teacher.toString());
@@ -74,17 +129,19 @@ public class TeacherController extends BaseController {
         }
     }
 
-    //通过教师号和密码登录
-    public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, NoSuchAlgorithmException {
+    /*
+        通过学号和密码登录
+     */
+    private void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, NoSuchAlgorithmException {
         ResponseData responseData = new ResponseData();
         MD5Generate md5 = new MD5Generate();
+        String password = md5.encode(req.getParameter("teacher_password"));
         try {
-            String password = md5.encode(req.getParameter("teacherPassword"));
             Teacher teacher = teacherDao.login(req.getParameter("teacherNumber"), password);
             if (teacher == null) {
                 responseData.writeResponseData(resp, "username or password is invalid");
             } else {
-                String teacherInfo= teacher.getTeacherNumber() + "==" + teacher.getTeacherId() + "==teacher";
+                String teacherInfo= teacher.getTeacherName() + "==" + teacher.getTeacherName();
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(teacherInfo));
                 System.out.println(Base64Util.encryptBASE64(teacherInfo));
                 cookie.setMaxAge(60 * 60 * 24);
@@ -94,12 +151,14 @@ public class TeacherController extends BaseController {
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
         } catch (Exception e) {
-            responseData.writeResponseData(resp, 400, "login fail", e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    //新增老师(注册)
-    public void register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    /*
+        新增老师(注册)
+     */
+    private void register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         MD5Generate md5 = new MD5Generate();
         Teacher teacher = new Teacher();
         ResponseData responseData = new ResponseData();
@@ -111,54 +170,13 @@ public class TeacherController extends BaseController {
             teacher.setTeacherNumber(req.getParameter("teacherNumber"));
         } catch (Exception e) {
             responseData.writeResponseData(resp, 400, "params is invalid", e.getMessage());
-            return;
         }
         try {
             teacherDao.addTeacher(teacher);
         } catch (SQLException e) {
             // 新增失败时返回失败
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
-            return;
         }
         responseData.writeResponseData(resp, "新增成功");
-    }
-
-    //发布作业
-    public void publishJob(HttpServletRequest req, HttpServletResponse resp) throws ParseException, SQLException {
-        Assignment assignment = new Assignment();
-        //yyyy-MM-dd HH:mm:ss
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        assignment.setAssignmentTitle(req.getParameter("assignmentTitle"));
-        assignment.setAssignmentDescription(req.getParameter("assignmentDescription"));
-        assignment.setAssignmentDeadLine(dateFormat.parse(req.getParameter("assignmentDeadLine")));
-        assignment.setAssignmentSubject(req.getParameter("assignmentSubject"));
-        assignment.setAssignmentClass(req.getParameter("assignmentClass"));
-        String[] userInfo = Common.getUserInfoFromCookies(req);
-        assignment.setTeaId(Integer.parseInt(userInfo[1]));
-        assignmentDao.publish(assignment);
-    }
-
-    //老师查看作业
-    public void querySubDTO(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
-        //拿到老师Id
-        String[] userInfo = Common.getUserInfoFromCookies(req);
-        int teacherId = Integer.parseInt(userInfo[1]);
-        //调用DAO层拿结果
-        List<subDTO> subDTOS = assignmentDao.querySubDTO(teacherId);
-        //输出到浏览器
-        ResponseData responseData = new ResponseData();
-        responseData.writeResponseData(resp,subDTOS.toString());
-    }
-
-    //老师批改提交(评分)
-    public void mark(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
-        //1、接收浏览器传来的submissionId和score
-        int submissionId = Integer.parseInt(req.getParameter("submissionId"));
-        int score = Integer.parseInt(req.getParameter("score"));
-        //2、调用DAO层
-        submissionDao.mark(submissionId, score);
-        //3、将修改结果返回浏览器
-        ResponseData responseData = new ResponseData();
-        responseData.writeResponseData(resp, "批改成功");
     }
 }
