@@ -1,27 +1,23 @@
 package com.job.controller;
 
-import com.job.auth.Authority;
 import com.job.dao.StudentDao;
 import com.job.model.Student;
 import com.job.util.Base64Util;
+import com.job.util.BaseController;
 import com.job.util.MD5Generate;
 import com.job.util.ResponseData;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Objects;
 
 
 @WebServlet("/student/*")
-public class StudentController extends HttpServlet {
+public class StudentController extends BaseController {
     /*
         生成接口唯一标识符
      */
@@ -35,64 +31,28 @@ public class StudentController extends HttpServlet {
     /*
         设置每个接口对应方法
      */
-    private static final HashMap<String, String> urlMethodMap = new HashMap<>();
-
-    static {
-        urlMethodMap.put("queryStudentById", "GET");
-        urlMethodMap.put("login", "GET");
-        urlMethodMap.put("register", "POST");
-    }
+    protected HashMap<String, String> urlMethodMap = new HashMap<>();
 
     /*
         引入接口使用的ORM操作对象
      */
     private final StudentDao studentDao;
 
-    private final Authority authority;
 
     public StudentController() {
         super();
         this.studentDao = new StudentDao();
-        this.authority = new Authority();
-    }
-
-    /*
-        方法映射
-     */
-    protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String method = req.getMethod();
-        // 获取请求的URI地址信息
-        String url = req.getRequestURI();
-        // 截取其中的方法名
-        String methodName = url.substring(url.lastIndexOf("/") + 1);
-        System.out.printf("current url: %s, method: %s\n", methodName, urlMethodMap.get(methodName));
-        if (!Objects.equals(urlMethodMap.get(methodName), method)) {
-            resp.getWriter().println("404");
-            return;
-        }
-        Method func;
-        try {
-            // 使用反射机制获取在本类中声明了的方法
-            func = getClass().getDeclaredMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
-            // 执行方法
-            func.invoke(this, req, resp);
-        } catch (NoSuchMethodException e) {
-            resp.getWriter().println("404");
-        } catch (InvocationTargetException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        this.urlMethodMap.put("queryStudentById", "GET");
+        this.urlMethodMap.put("login", "GET");
+        this.urlMethodMap.put("register", "POST");
+        super.urlMethodMap = urlMethodMap;
     }
 
     /*
         通过id查找用户
      */
-    private void queryStudentById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void queryStudentById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
-        if (!authority.verify(req)) {
-            responseData.writeResponseData(resp, 403, "verify fail", "");
-            return;
-        }
-
         try {
             Student student = studentDao.getStudentById(Integer.parseInt(req.getParameter("studentId")));
             responseData.writeResponseData(resp, student.toString());
@@ -104,7 +64,7 @@ public class StudentController extends HttpServlet {
     /*
         通过学号和密码登录
      */
-    private void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
         MD5Generate md5 = new MD5Generate();
         try {
@@ -130,7 +90,7 @@ public class StudentController extends HttpServlet {
     /*
         新增学生(注册)
      */
-    private void register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    public void register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         MD5Generate md5 = new MD5Generate();
         Student student = new Student();
         ResponseData responseData = new ResponseData();

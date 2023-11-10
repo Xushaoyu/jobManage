@@ -44,11 +44,8 @@ public class Authority {
     /*
         验证当前用户是否有权限访问接口
      */
-    public Boolean verify(HttpServletRequest req){
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        StackTraceElement caller = stackTrace[2];
-        String[] classNameUrl = caller.getClassName().split("\\.");
-        String url = classNameUrl[classNameUrl.length - 1] + "/" + caller.getMethodName();
+    public Boolean verify(HttpServletRequest req, String className, String methodName){
+        String url = className + "/" + methodName;
         System.out.println("current verify method:" +  url);
 
         // 从cookie中提取信息
