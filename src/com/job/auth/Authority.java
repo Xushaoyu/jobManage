@@ -28,7 +28,7 @@ public class Authority {
     /*
         学生权限数组：类名加方法名
      */
-    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById", "StudentController/addStudent");
+    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById", "StudentController/addStudent", "StudentController/queryStudentById");
 
     /*
         老师权限数组：类名加方法名

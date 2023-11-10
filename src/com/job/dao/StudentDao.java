@@ -41,7 +41,7 @@ public class StudentDao {
         Date date = new java.sql.Date(System.currentTimeMillis());
         PreparedStatement preparedStatement = connection
                 .prepareStatement("update students set student_number=?, student_password=?, student_name=?, student_class=?, update_time=?" +
-                        "where Studentid=?");
+                        "where student_id=?");
         // Parameters start with 1
         preparedStatement.setString(1, student.getStudentNumber());
         preparedStatement.setString(2, student.getStudentPassword());

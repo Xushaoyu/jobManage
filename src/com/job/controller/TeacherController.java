@@ -1,5 +1,6 @@
 package com.job.controller;
 
+import com.job.auth.Authority;
 import com.job.dao.TeacherDao;
 import com.job.model.Teacher;
 import com.job.util.Base64Util;
@@ -47,9 +48,13 @@ public class TeacherController extends HttpServlet {
      */
     private final TeacherDao teacherDao;
 
+    private final Authority authority;
+
+
     public TeacherController() {
         super();
         this.teacherDao = new TeacherDao();
+        this.authority = new Authority();
     }
 
     /*
@@ -111,8 +116,9 @@ public class TeacherController extends HttpServlet {
      */
     private void queryTeacherById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
-        if (!verify(req)){
+        if (!authority.verify(req)) {
             responseData.writeResponseData(resp, 403, "verify fail", "");
+            return;
         }
 
         try {
@@ -152,7 +158,7 @@ public class TeacherController extends HttpServlet {
     /*
         新增老师(注册)
      */
-    private void addTeacher(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         MD5Generate md5 = new MD5Generate();
         Teacher teacher = new Teacher();
         ResponseData responseData = new ResponseData();
