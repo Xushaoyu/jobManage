@@ -179,4 +179,17 @@ public class TeacherController extends HttpServlet {
         }
         responseData.writeResponseData(resp, "新增成功");
     }
+
+    /**
+     * 发布作业
+     * @return
+     */
+    public boolean publishJob(HttpServletRequest req, HttpServletResponse resp){
+        req.getParameter("assignment_title");
+        req.getParameter("assignment_description");
+        req.getParameter("assignment_deadline");
+        req.getParameter("assignment_subject");
+        req.getParameter("assignment_class");
+        req.getParameter("tea_id");
+    }
 }
