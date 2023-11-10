@@ -1,8 +1,7 @@
 package com.job.controller;
 
-import com.job.auth.Authority;
-import com.job.dao.StudentDao;
-import com.job.model.Student;
+import com.job.dao.TeacherDao;
+import com.job.model.Teacher;
 import com.job.util.Base64Util;
 import com.job.util.MD5Generate;
 import com.job.util.ResponseData;
@@ -15,13 +14,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Objects;
 
-
-@WebServlet("/student/*")
-public class StudentController extends HttpServlet {
+@WebServlet("/teacher/*")
+public class TeacherController extends HttpServlet {
     /*
         生成接口唯一标识符
      */
@@ -38,22 +37,19 @@ public class StudentController extends HttpServlet {
     private static final HashMap<String, String> urlMethodMap = new HashMap<>();
 
     static {
-        urlMethodMap.put("queryStudentById", "GET");
+        urlMethodMap.put("queryTeacherById", "GET");
         urlMethodMap.put("login", "GET");
-        urlMethodMap.put("register", "POST");
+        urlMethodMap.put("addTeacher", "POST");
     }
 
     /*
         引入接口使用的ORM操作对象
      */
-    private final StudentDao studentDao;
+    private final TeacherDao teacherDao;
 
-    private final Authority authority;
-
-    public StudentController() {
+    public TeacherController() {
         super();
-        this.studentDao = new StudentDao();
-        this.authority = new Authority();
+        this.teacherDao = new TeacherDao();
     }
 
     /*
@@ -82,20 +78,46 @@ public class StudentController extends HttpServlet {
             throw new RuntimeException(e);
         }
     }
+    /*
+        验证cookie身份
+     */
+    private Boolean verify(HttpServletRequest req){
+        Cookie[] cookies = req.getCookies();
+        if (cookies == null){
+            return false;
+        }
+        for (Cookie cookie: cookies){
+            if(cookie.getName().equals("jobCookie")){
+                String teacherInfo;
+                try {
+                    teacherInfo = Base64Util.decryBASE64(cookie.getValue());
+                    System.out.println("解密后信息:\t" + teacherInfo);
+                    String teacherName = teacherInfo.split("==")[0];
+                    String teacherId = teacherInfo.split("==")[1];
+                    Teacher teacher;
+                    teacher = teacherDao.verify(Integer.parseInt(teacherId), teacherName);
+                    return teacher != null;
+                } catch (Exception e) {
+                    System.out.println("验证失败");
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false;
+    }
 
     /*
         通过id查找用户
      */
-    private void queryStudentById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void queryTeacherById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
-        if (!authority.verify(req)) {
+        if (!verify(req)){
             responseData.writeResponseData(resp, 403, "verify fail", "");
-            return;
         }
 
         try {
-            Student student = studentDao.getStudentById(Integer.parseInt(req.getParameter("studentId")));
-            responseData.writeResponseData(resp, student.toString());
+            Teacher teacher = teacherDao.getTeacherById(Integer.parseInt(req.getParameter("teacherId")));
+            responseData.writeResponseData(resp, teacher.toString());
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
         }
@@ -104,18 +126,18 @@ public class StudentController extends HttpServlet {
     /*
         通过学号和密码登录
      */
-    private void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, NoSuchAlgorithmException {
         ResponseData responseData = new ResponseData();
         MD5Generate md5 = new MD5Generate();
+        String password = md5.encode(req.getParameter("teacher_password"));
         try {
-            String password = md5.encode(req.getParameter("password"));
-            Student student = studentDao.login(req.getParameter("studentNumber"), password);//请求带进来的参数
-            if (student == null) {
+            Teacher teacher = teacherDao.login(req.getParameter("teacherNumber"), password);
+            if (teacher == null) {
                 responseData.writeResponseData(resp, "username or password is invalid");
             } else {
-                String studentInfo = student.getStudentName() + "==" + student.getStudentId() + "==student";
-                Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(studentInfo));
-                System.out.println(Base64Util.encryptBASE64(studentInfo));
+                String teacherInfo= teacher.getTeacherName() + "==" + teacher.getTeacherName();
+                Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(teacherInfo));
+                System.out.println(Base64Util.encryptBASE64(teacherInfo));
                 cookie.setMaxAge(60 * 60 * 24);
                 resp.addCookie(cookie);
                 responseData.writeResponseData(resp, "登录成功");
@@ -123,34 +145,31 @@ public class StudentController extends HttpServlet {
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
         } catch (Exception e) {
-            responseData.writeResponseData(resp, 400, "login fail", e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
     /*
-        新增学生(注册)
+        新增老师(注册)
      */
-    private void register(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void addTeacher(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         MD5Generate md5 = new MD5Generate();
-        Student student = new Student();
+        Teacher teacher = new Teacher();
         ResponseData responseData = new ResponseData();
         try {
             //校验参数是否正确
-            String password = md5.encode(req.getParameter("password"));
-            student.setStudentPassword(password);
-            student.setStudentName(req.getParameter("studentName"));
-            student.setStudentNumber(req.getParameter("studentNumber"));
-            student.setStudentClass(req.getParameter("studentClass"));
+            String password = md5.encode(req.getParameter("teacherPassword"));
+            teacher.setTeacherPassword(password);
+            teacher.setTeacherName(req.getParameter("teacherName"));
+            teacher.setTeacherNumber(req.getParameter("teacherNumber"));
         } catch (Exception e) {
             responseData.writeResponseData(resp, 400, "params is invalid", e.getMessage());
-            return;
         }
         try {
-            studentDao.addStudent(student);
+            teacherDao.addTeacher(teacher);
         } catch (SQLException e) {
             // 新增失败时返回失败
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
-            return;
         }
         responseData.writeResponseData(resp, "新增成功");
     }
