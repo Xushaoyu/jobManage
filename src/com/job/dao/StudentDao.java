@@ -10,6 +10,7 @@ import java.util.List;
 public class StudentDao {
 
 
+    //复制 放开头
     private final Connection connection;
 
     public StudentDao() {
@@ -109,12 +110,12 @@ public class StudentDao {
         return student;
     }
 
-    public Student verify(int studentId, String studentNumber) throws SQLException {
+    public Student verify(int studentId, String studentName) throws SQLException {
         Student student = null;
         PreparedStatement preparedStatement = connection.
-                prepareStatement("select * from students where student_id=? and student_number=?");
+                prepareStatement("select * from students where student_id=? and student_name=?");
         preparedStatement.setInt(1, studentId);
-        preparedStatement.setString(2, studentNumber);
+        preparedStatement.setString(2, studentName);
         ResultSet rs = preparedStatement.executeQuery();
 
         if (rs.next()) {
