@@ -22,16 +22,13 @@ public class Authority {
     /*
         学生权限数组：类名加方法名
      */
-    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById"
-            , "StudentController/addStudent"
-            , "StudentController/queryStudentById"
-            , "StudentController/queryWork");
+    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById", "StudentController/addStudent", "StudentController/queryStudentById");
 
     /*
         老师权限数组：类名加方法名
      */
 
-    private final List<String> teacher_power = Arrays.asList("TeacherController/publishJob", "TeacherController/querySubDTO", "TeacherController/mark");
+    private final List<String> teacher_power = Arrays.asList("TeacherController/publishJob", "teacher/xxx");
 
     public Authority() {
         this.studentDao = new StudentDao();
@@ -49,10 +46,9 @@ public class Authority {
         if (userInfo == null){
             return false;
         }
-        String number = userInfo[0];
+        String name = userInfo[0];
         String id = userInfo[1];
         String role = userInfo[2];
-        System.out.println(userInfo);
         // 根据当前角色判断是否有权限，如果有权限，检查数据库用户是否存在
         try {
             if (Objects.equals(role, "student")){
@@ -60,14 +56,14 @@ public class Authority {
                     return false;
                 }
                 Student student;
-                student = studentDao.verify(Integer.parseInt(id), number);
+                student = studentDao.verify(Integer.parseInt(id), name);
                 return student != null;
             } else if (Objects.equals(role, "teacher")){
                 if (!teacher_power.contains(url)){
                     return false;
                 }
                 Teacher teacher;
-                teacher = teacherDao.verify(Integer.parseInt(id), number);
+                teacher = teacherDao.verify(Integer.parseInt(id), name);
                 return teacher != null;
             }
         } catch (Exception e) {
