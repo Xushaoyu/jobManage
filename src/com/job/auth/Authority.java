@@ -28,7 +28,7 @@ public class Authority {
         老师权限数组：类名加方法名
      */
 
-    private final List<String> teacher_power = Arrays.asList("teacher/xxx", "teacher/xxx");
+    private final List<String> teacher_power = Arrays.asList("TeacherController/publishJob", "teacher/xxx");
 
     public Authority() {
         this.studentDao = new StudentDao();
