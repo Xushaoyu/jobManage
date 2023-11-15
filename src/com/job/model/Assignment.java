@@ -42,12 +42,12 @@ public class Assignment {
         this.assignmentDescription = assignmentDescription;
     }
 
-    public void setAssignmentDeadLine(Date assignmentDeadLine) {
-        this.assignmentDeadLine = assignmentDeadLine;
-    }
-
     public Date getAssignmentDeadLine() {
         return assignmentDeadLine;
+    }
+
+    public void setAssignmentDeadLine(Date assignmentDeadLine) {
+        this.assignmentDeadLine = assignmentDeadLine;
     }
 
     public String getAssignmentSubject() {
