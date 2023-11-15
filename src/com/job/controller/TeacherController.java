@@ -5,10 +5,7 @@ import com.job.dao.AssignmentDao;
 import com.job.dao.TeacherDao;
 import com.job.model.Assignment;
 import com.job.model.Teacher;
-import com.job.util.Base64Util;
-import com.job.util.BaseController;
-import com.job.util.MD5Generate;
-import com.job.util.ResponseData;
+import com.job.util.*;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
@@ -83,7 +80,7 @@ public class TeacherController extends BaseController {
             if (teacher == null) {
                 responseData.writeResponseData(resp, "username or password is invalid");
             } else {
-                String teacherInfo= teacher.getTeacherName() + "==" + teacher.getTeacherName();
+                String teacherInfo= teacher.getTeacherName() + "==" + teacher.getTeacherId() + "==teacher";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(teacherInfo));
                 System.out.println(Base64Util.encryptBASE64(teacherInfo));
                 cookie.setMaxAge(60 * 60 * 24);
@@ -131,13 +128,14 @@ public class TeacherController extends BaseController {
     public void publishJob(HttpServletRequest req, HttpServletResponse resp) throws ParseException, SQLException {
         Assignment assignment = new Assignment();
         //yyyy-MM-dd HH:mm:ss
-        DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         assignment.setAssignmentTitle(req.getParameter("assignmentTitle"));
         assignment.setAssignmentDescription(req.getParameter("assignmentDescription"));
-        assignment.setAssignmentDeadLine(simpleDateFormat.parse(req.getParameter("assignmentDeadLine")));
+        assignment.setAssignmentDeadLine(dateFormat.parse(req.getParameter("assignmentDeadLine")));
         assignment.setAssignmentSubject(req.getParameter("assignmentSubject"));
         assignment.setAssignmentClass(req.getParameter("assignmentClass"));
-        assignment.setTeaId(Integer.parseInt(req.getParameter("teaId")));
+        String[] userInfo = Common.getUserInfoFromCookies(req);
+        assignment.setTeaId(Integer.parseInt(userInfo[1]));
         assignmentDao.publish(assignment);
     }
 }
