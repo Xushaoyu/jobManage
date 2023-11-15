@@ -70,7 +70,7 @@ public class StudentDao {
     }
 
     public Student getStudentById(int StudentId) throws SQLException {
-        Student student = new Student();
+        Student student = null;
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from students where student_id=?");
         preparedStatement.setInt(1, StudentId);
@@ -107,12 +107,12 @@ public class StudentDao {
         return student;
     }
 
-    public Student verify(int studentId, String studentName) throws SQLException {
+    public Student verify(int studentId, String studentNumber) throws SQLException {
         Student student = null;
         PreparedStatement preparedStatement = connection.
-                prepareStatement("select * from students where student_id=? and student_name=?");
+                prepareStatement("select * from students where student_id=? and student_number=?");
         preparedStatement.setInt(1, studentId);
-        preparedStatement.setString(2, studentName);
+        preparedStatement.setString(2, studentNumber);
         ResultSet rs = preparedStatement.executeQuery();
 
         if (rs.next()) {
