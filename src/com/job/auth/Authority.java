@@ -22,13 +22,13 @@ public class Authority {
     /*
         学生权限数组：类名加方法名
      */
-    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById", "StudentController/addStudent");
+    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById", "StudentController/addStudent", "StudentController/queryStudentById");
 
     /*
         老师权限数组：类名加方法名
      */
 
-    private final List<String> teacher_power = Arrays.asList("teacher/xxx", "teacher/xxx");
+    private final List<String> teacher_power = Arrays.asList("TeacherController/publishJob", "teacher/xxx");
 
     public Authority() {
         this.studentDao = new StudentDao();
@@ -49,6 +49,7 @@ public class Authority {
         String name = userInfo[0];
         String id = userInfo[1];
         String role = userInfo[2];
+        System.out.println(userInfo);
         // 根据当前角色判断是否有权限，如果有权限，检查数据库用户是否存在
         try {
             if (Objects.equals(role, "student")){
