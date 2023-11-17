@@ -39,8 +39,6 @@ public class BaseController extends HttpServlet {
             return;
         }
         String[] classNameUrl = getClass().getName().split("\\.");
-        System.out.println(classNameUrl[classNameUrl.length - 1]);
-        System.out.println(methodName);
         if (!methodName.equals("login") && !methodName.equals("register") && !authority.verify(req, classNameUrl[classNameUrl.length - 1], methodName)) {
             resp.getWriter().println("403");
             return;

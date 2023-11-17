@@ -1,6 +1,5 @@
 package com.job.dao;
 
-import com.job.model.Student;
 import com.job.model.Teacher;
 import com.job.util.DBUtil;
 
@@ -102,7 +101,7 @@ public class TeacherDao {
     }
 
     public Teacher verify(int teacherId, String teacherNumber) throws SQLException {
-        Teacher teacher = null;
+        Teacher teacher = new Teacher();
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from teachers where teacher_id=? and teacher_number=?");
         preparedStatement.setInt(1, teacherId);

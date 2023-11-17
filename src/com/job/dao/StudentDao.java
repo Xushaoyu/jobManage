@@ -77,6 +77,7 @@ public class StudentDao {
         ResultSet rs = preparedStatement.executeQuery();
 
         if (rs.next()) {
+            student = new Student();
             student.setStudentNumber(rs.getString("student_number"));
             student.setStudentId(rs.getInt("student_id"));
             student.setStudentName(rs.getString("student_name"));
