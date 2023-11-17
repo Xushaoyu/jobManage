@@ -7,9 +7,12 @@ import com.job.model.Teacher;
 import com.job.util.Common;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 
 /*
     认证和权限
@@ -18,17 +21,6 @@ public class Authority {
     private final StudentDao studentDao;
 
     private final TeacherDao teacherDao;
-
-    /*
-        学生权限数组：类名加方法名
-     */
-    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById", "StudentController/addStudent");
-
-    /*
-        老师权限数组：类名加方法名
-     */
-
-    private final List<String> teacher_power = Arrays.asList("teacher/xxx", "teacher/xxx");
 
     public Authority() {
         this.studentDao = new StudentDao();
@@ -49,9 +41,19 @@ public class Authority {
         String name = userInfo[0];
         String id = userInfo[1];
         String role = userInfo[2];
+
+        Properties prop = new Properties();
+        InputStream inputStream = Authority.class.getClassLoader().getResourceAsStream("/servlet.properties");
+        try {
+            prop.load(inputStream);
+        } catch (IOException e) {
+            return false;
+        }
+
         // 根据当前角色判断是否有权限，如果有权限，检查数据库用户是否存在
         try {
             if (Objects.equals(role, "student")){
+                List<String> student_power = Arrays.asList(prop.getProperty("student_power").split(","));
                 if (!student_power.contains(url)){
                     return false;
                 }
@@ -59,6 +61,7 @@ public class Authority {
                 student = studentDao.verify(Integer.parseInt(id), name);
                 return student != null;
             } else if (Objects.equals(role, "teacher")){
+                List<String> teacher_power = Arrays.asList(prop.getProperty("teacher_power").split(","));
                 if (!teacher_power.contains(url)){
                     return false;
                 }
