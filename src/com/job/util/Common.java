@@ -3,6 +3,8 @@ package com.job.util;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 public class Common {
 
@@ -21,6 +23,7 @@ public class Common {
                 String userInfo;
                 try {
                     userInfo = Base64Util.decryBASE64(cookie.getValue());
+                    //userInfo = Base64Util.decryBASE64(URLDecoder.decode(cookie.getValue(), "UTF-8"));
                     String[] userInfoArray = userInfo.split("==");
                     if (userInfoArray.length != 3){
                         return null;
