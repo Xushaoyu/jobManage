@@ -1,3 +1,4 @@
 .idea
 .out
 src/servlet.properties
+.DS_Store

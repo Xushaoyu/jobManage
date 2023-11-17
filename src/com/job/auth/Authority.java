@@ -22,6 +22,20 @@ public class Authority {
 
     private final TeacherDao teacherDao;
 
+    /*
+        学生权限数组：类名加方法名
+     */
+    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById"
+            , "StudentController/addStudent"
+            , "StudentController/queryStudentById"
+            , "StudentController/queryWork");
+
+    /*
+        老师权限数组：类名加方法名
+     */
+
+    private final List<String> teacher_power = Arrays.asList("TeacherController/publishJob", "TeacherController/querySubDTO", "TeacherController/mark");
+
     public Authority() {
         this.studentDao = new StudentDao();
         this.teacherDao = new TeacherDao();
@@ -38,9 +52,10 @@ public class Authority {
         if (userInfo == null){
             return false;
         }
-        String name = userInfo[0];
+        String number = userInfo[0];
         String id = userInfo[1];
         String role = userInfo[2];
+        System.out.println(userInfo);
 
         Properties prop = new Properties();
         InputStream inputStream = Authority.class.getClassLoader().getResourceAsStream("/servlet.properties");
@@ -58,7 +73,7 @@ public class Authority {
                     return false;
                 }
                 Student student;
-                student = studentDao.verify(Integer.parseInt(id), name);
+                student = studentDao.verify(Integer.parseInt(id), number);
                 return student != null;
             } else if (Objects.equals(role, "teacher")){
                 List<String> teacher_power = Arrays.asList(prop.getProperty("teacher_power").split(","));
@@ -66,7 +81,7 @@ public class Authority {
                     return false;
                 }
                 Teacher teacher;
-                teacher = teacherDao.verify(Integer.parseInt(id), name);
+                teacher = teacherDao.verify(Integer.parseInt(id), number);
                 return teacher != null;
             }
         } catch (Exception e) {

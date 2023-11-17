@@ -1,19 +1,22 @@
 package com.job.controller;
 
+import com.job.dao.AssignmentDao;
 import com.job.dao.StudentDao;
+import com.job.model.Assignment;
+import com.job.model.AssignmentDTO;
 import com.job.model.Student;
-import com.job.util.Base64Util;
-import com.job.util.BaseController;
-import com.job.util.MD5Generate;
-import com.job.util.ResponseData;
+import com.job.model.subDTO;
+import com.job.util.*;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
 
 @WebServlet("/student/*")
@@ -37,14 +40,17 @@ public class StudentController extends BaseController {
         引入接口使用的ORM操作对象
      */
     private final StudentDao studentDao;
+    private final AssignmentDao assignmentDao;
 
 
     public StudentController() {
         super();
         this.studentDao = new StudentDao();
+        this.assignmentDao = new AssignmentDao();
         this.urlMethodMap.put("queryStudentById", "GET");
         this.urlMethodMap.put("login", "GET");
         this.urlMethodMap.put("register", "POST");
+        this.urlMethodMap.put("queryWork", "GET");
         super.urlMethodMap = urlMethodMap;
     }
 
@@ -73,7 +79,7 @@ public class StudentController extends BaseController {
             if (student == null) {
                 responseData.writeResponseData(resp, "username or password is invalid");
             } else {
-                String studentInfo = student.getStudentName() + "==" + student.getStudentId() + "==student";
+                String studentInfo = student.getStudentNumber() + "==" + student.getStudentId() + "==student";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(studentInfo));
                 System.out.println(Base64Util.encryptBASE64(studentInfo));
                 cookie.setMaxAge(60 * 60 * 24);
@@ -113,5 +119,17 @@ public class StudentController extends BaseController {
             return;
         }
         responseData.writeResponseData(resp, "新增成功");
+    }
+
+    //学生查看作业
+    public void queryWork(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
+        //拿到学生id
+        String[] userInfo = Common.getUserInfoFromCookies(req);
+        int studentId = Integer.parseInt(userInfo[1]);
+        //调用DAO层拿结果
+        List<AssignmentDTO> assignmentDTOS = assignmentDao.queryWork(studentId);
+        //输出到浏览器
+        ResponseData responseData = new ResponseData();
+        responseData.writeResponseData(resp,assignmentDTOS.toString());
     }
 }

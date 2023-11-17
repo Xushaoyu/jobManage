@@ -41,7 +41,7 @@ public class StudentDao {
         Date date = new java.sql.Date(System.currentTimeMillis());
         PreparedStatement preparedStatement = connection
                 .prepareStatement("update students set student_number=?, student_password=?, student_name=?, student_class=?, update_time=?" +
-                        "where Studentid=?");
+                        "where student_id=?");
         // Parameters start with 1
         preparedStatement.setString(1, student.getStudentNumber());
         preparedStatement.setString(2, student.getStudentPassword());
@@ -70,7 +70,7 @@ public class StudentDao {
     }
 
     public Student getStudentById(int StudentId) throws SQLException {
-        Student student = new Student();
+        Student student = null;
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from students where student_id=?");
         preparedStatement.setInt(1, StudentId);
@@ -107,12 +107,12 @@ public class StudentDao {
         return student;
     }
 
-    public Student verify(int studentId, String studentName) throws SQLException {
+    public Student verify(int studentId, String studentNumber) throws SQLException {
         Student student = null;
         PreparedStatement preparedStatement = connection.
-                prepareStatement("select * from students where student_id=? and student_name=?");
+                prepareStatement("select * from students where student_id=? and student_number=?");
         preparedStatement.setInt(1, studentId);
-        preparedStatement.setString(2, studentName);
+        preparedStatement.setString(2, studentNumber);
         ResultSet rs = preparedStatement.executeQuery();
 
         if (rs.next()) {
