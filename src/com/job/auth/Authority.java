@@ -22,13 +22,16 @@ public class Authority {
     /*
         学生权限数组：类名加方法名
      */
-    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById", "StudentController/addStudent", "StudentController/queryStudentById");
+    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById"
+            , "StudentController/addStudent"
+            , "StudentController/queryStudentById"
+            , "StudentController/queryWork");
 
     /*
         老师权限数组：类名加方法名
      */
 
-    private final List<String> teacher_power = Arrays.asList("TeacherController/publishJob", "teacher/xxx");
+    private final List<String> teacher_power = Arrays.asList("TeacherController/publishJob", "TeacherController/querySubDTO", "TeacherController/mark");
 
     public Authority() {
         this.studentDao = new StudentDao();
@@ -46,7 +49,7 @@ public class Authority {
         if (userInfo == null){
             return false;
         }
-        String name = userInfo[0];
+        String number = userInfo[0];
         String id = userInfo[1];
         String role = userInfo[2];
         System.out.println(userInfo);
@@ -57,14 +60,14 @@ public class Authority {
                     return false;
                 }
                 Student student;
-                student = studentDao.verify(Integer.parseInt(id), name);
+                student = studentDao.verify(Integer.parseInt(id), number);
                 return student != null;
             } else if (Objects.equals(role, "teacher")){
                 if (!teacher_power.contains(url)){
                     return false;
                 }
                 Teacher teacher;
-                teacher = teacherDao.verify(Integer.parseInt(id), name);
+                teacher = teacherDao.verify(Integer.parseInt(id), number);
                 return teacher != null;
             }
         } catch (Exception e) {
