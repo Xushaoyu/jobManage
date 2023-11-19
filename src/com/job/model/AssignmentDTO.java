@@ -2,6 +2,7 @@ package com.job.model;
 
 import java.util.Date;
 
+//查看作业的模板
 public class AssignmentDTO {
     private String assignmentTitle;
     private String assignmentDescription;
