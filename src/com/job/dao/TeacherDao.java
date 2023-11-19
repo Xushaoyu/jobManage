@@ -101,12 +101,12 @@ public class TeacherDao {
         return teacher;
     }
 
-    public Teacher verify(int teacherId, String teacherName) throws SQLException {
-        Teacher teacher = new Teacher();
+    public Teacher verify(int teacherId, String teacherNumber) throws SQLException {
+        Teacher teacher = null;
         PreparedStatement preparedStatement = connection.
-                prepareStatement("select * from teachers where teacher_id=? and teacher_name=?");
+                prepareStatement("select * from teachers where teacher_id=? and teacher_number=?");
         preparedStatement.setInt(1, teacherId);
-        preparedStatement.setString(2, teacherName);
+        preparedStatement.setString(2, teacherNumber);
         ResultSet rs = preparedStatement.executeQuery();
 
         if (rs.next()) {

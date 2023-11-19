@@ -32,6 +32,5 @@ public class DBUtil {
             }
             return connection;
         }
-
     }
 }
