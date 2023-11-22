@@ -22,6 +22,7 @@ public class SubmissionDao {
         preparedStatement.execute();
     }
 
+    //学生提交作业
     public void commit(subDTO subdto) throws SQLException {
         //将传来的参数执行sql
         Date date = new java.sql.Date(System.currentTimeMillis());

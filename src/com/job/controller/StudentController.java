@@ -143,7 +143,6 @@ public class StudentController extends BaseController {
     public void commitWork(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
         //拿到请求传来的参数
         //通过传一个subDTO对象将参数传入
-
         ResponseData responseData = new ResponseData();
         subDTO subdto = new subDTO();
         //拿到学生id
@@ -174,11 +173,6 @@ public class StudentController extends BaseController {
             return;
         }
         responseData.writeResponseData(resp, "新增成功");
-
-
-
-
-
 
         //使用传来的参数执行插入语句
 

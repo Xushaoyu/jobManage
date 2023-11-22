@@ -102,7 +102,8 @@ public class TeacherDao {
     }
 
     public Teacher verify(int teacherId, String teacherNumber) throws SQLException {
-        Teacher teacher = null;
+        Teacher teacher = new Teacher();
+        teacher.setTeacherId(0);
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from teachers where teacher_id=? and teacher_number=?");
         preparedStatement.setInt(1, teacherId);

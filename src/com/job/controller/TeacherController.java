@@ -124,18 +124,31 @@ public class TeacherController extends BaseController {
     }
 
     //发布作业
-    public void publishJob(HttpServletRequest req, HttpServletResponse resp) throws ParseException, SQLException {
+    public void publishJob(HttpServletRequest req, HttpServletResponse resp) throws ParseException, SQLException, IOException {
         Assignment assignment = new Assignment();
-        //yyyy-MM-dd HH:mm:ss
+        ResponseData responseData = new ResponseData();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        assignment.setAssignmentTitle(req.getParameter("assignmentTitle"));
-        assignment.setAssignmentDescription(req.getParameter("assignmentDescription"));
-        assignment.setAssignmentDeadLine(dateFormat.parse(req.getParameter("assignmentDeadLine")));
-        assignment.setAssignmentSubject(req.getParameter("assignmentSubject"));
-        assignment.setAssignmentClass(req.getParameter("assignmentClass"));
-        String[] userInfo = Common.getUserInfoFromCookies(req);
-        assignment.setTeaId(Integer.parseInt(userInfo[1]));
-        assignmentDao.publish(assignment);
+
+        try {
+            assignment.setAssignmentTitle(req.getParameter("assignmentTitle"));
+            assignment.setAssignmentDescription(req.getParameter("assignmentDescription"));
+            assignment.setAssignmentDeadLine(dateFormat.parse(req.getParameter("assignmentDeadLine")));
+            assignment.setAssignmentSubject(req.getParameter("assignmentSubject"));
+            assignment.setAssignmentClass(req.getParameter("assignmentClass"));
+            String[] userInfo = Common.getUserInfoFromCookies(req);
+            assignment.setTeaId(Integer.parseInt(userInfo[1]));
+        }catch (Exception e) {
+            responseData.writeResponseData(resp, 400, "params is invalid", e.getMessage());
+            return;
+        }
+        //yyyy-MM-dd HH:mm:ss
+        try {
+            assignmentDao.publish(assignment);
+        }catch (SQLException e){
+            responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
+
+        }
+        responseData.writeResponseData(resp, "新增成功");
     }
 
     //老师查看作业

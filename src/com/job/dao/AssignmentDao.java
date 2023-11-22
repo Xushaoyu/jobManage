@@ -45,7 +45,7 @@ public class AssignmentDao {
         psm.setInt(1,teacherId);
         ResultSet rs = psm.executeQuery();
         List<subDTO> subDTOList = new ArrayList<subDTO>();
-        if (rs.next()) {
+        while (rs.next()) {
             subDTO subDTO = new subDTO();
             subDTO.setSubId(rs.getInt("submission_id"));
             subDTO.setStuName(rs.getString("student_name"));
@@ -66,14 +66,15 @@ public class AssignmentDao {
         psm.setInt(1,studentId);
         ResultSet rs = psm.executeQuery();
         List<AssignmentDTO> assignmentDTOS = new ArrayList<AssignmentDTO>();
-        if (rs.next()) {
+        while (rs.next()) {
             AssignmentDTO assignmentDTO = new AssignmentDTO();
-            assignmentDTO.setAssignmentTitle(rs.getString("assignmentTitle"));
-            assignmentDTO.setAssignmentDescription(rs.getString("assignmentDescription"));
-            assignmentDTO.setAssignmentDeadLine(rs.getDate("assignmentDeadline"));
-            assignmentDTO.setAssignmentSubject(rs.getString("assignmentSubject"));
+            assignmentDTO.setAssignmentTitle(rs.getString("assignment_title"));
+            assignmentDTO.setAssignmentDescription(rs.getString("assignment_description"));
+            assignmentDTO.setAssignmentDeadLine(rs.getDate("assignment_deadline"));
+            assignmentDTO.setAssignmentSubject(rs.getString("assignment_subject"));
             assignmentDTOS.add(assignmentDTO);
         }
         return assignmentDTOS;
+
     }
 }

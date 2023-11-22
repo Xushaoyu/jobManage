@@ -22,7 +22,8 @@ public class Authority {
     /*
         学生权限数组：类名加方法名
      */
-    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById"
+    private final List<String> student_power = Arrays.asList(
+            "StudentController/queryStudentById"
             , "StudentController/addStudent"
             , "StudentController/queryStudentById"
             , "StudentController/queryWork"
@@ -32,7 +33,8 @@ public class Authority {
         老师权限数组：类名加方法名
      */
 
-    private final List<String> teacher_power = Arrays.asList("TeacherController/publishJob"
+    private final List<String> teacher_power = Arrays.asList(
+            "TeacherController/publishJob"
             , "TeacherController/querySubDTO"
             , "TeacherController/mark");
 
@@ -64,14 +66,14 @@ public class Authority {
                 }
                 Student student;
                 student = studentDao.verify(Integer.parseInt(id), number);
-                return student != null;
+                return student.getStudentId() != 0;
             } else if (Objects.equals(role, "teacher")){
                 if (!teacher_power.contains(url)){
                     return false;
                 }
                 Teacher teacher;
                 teacher = teacherDao.verify(Integer.parseInt(id), number);
-                return teacher != null;
+                return teacher.getTeacherId() != 0;
             }
         } catch (Exception e) {
             System.out.println("verify fail");
