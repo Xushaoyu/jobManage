@@ -126,6 +126,7 @@ public class StudentController extends BaseController {
         //拿到学生id
         String[] userInfo = Common.getUserInfoFromCookies(req);
         int studentId = Integer.parseInt(userInfo[1]);
+        System.out.println("学生id:"+studentId);
         //调用DAO层拿结果
         List<AssignmentDTO> assignmentDTOS = assignmentDao.queryWork(studentId);
         //输出到浏览器

@@ -66,12 +66,12 @@ public class AssignmentDao {
         psm.setInt(1,studentId);
         ResultSet rs = psm.executeQuery();
         List<AssignmentDTO> assignmentDTOS = new ArrayList<AssignmentDTO>();
-        if (rs.next()) {
+        while (rs.next()) {
             AssignmentDTO assignmentDTO = new AssignmentDTO();
-            assignmentDTO.setAssignmentTitle(rs.getString("assignmentTitle"));
-            assignmentDTO.setAssignmentDescription(rs.getString("assignmentDescription"));
-            assignmentDTO.setAssignmentDeadLine(rs.getDate("assignmentDeadline"));
-            assignmentDTO.setAssignmentSubject(rs.getString("assignmentSubject"));
+            assignmentDTO.setAssignmentTitle(rs.getString("assignment_title"));
+            assignmentDTO.setAssignmentDescription(rs.getString("assignment_description"));
+            assignmentDTO.setAssignmentDeadLine(rs.getDate("assignment_deadline"));
+            assignmentDTO.setAssignmentSubject(rs.getString("assignment_subject"));
             assignmentDTOS.add(assignmentDTO);
         }
         return assignmentDTOS;
