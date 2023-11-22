@@ -61,14 +61,14 @@ public class Authority {
                 }
                 Student student;
                 student = studentDao.verify(Integer.parseInt(id), number);
-                return student != null;
+                return student.getStudentId() != 0;
             } else if (Objects.equals(role, "teacher")){
                 if (!teacher_power.contains(url)){
                     return false;
                 }
                 Teacher teacher;
                 teacher = teacherDao.verify(Integer.parseInt(id), number);
-                return teacher != null;
+                return teacher.getTeacherId() != 0;
             }
         } catch (Exception e) {
             System.out.println("verify fail");
