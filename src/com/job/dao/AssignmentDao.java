@@ -59,7 +59,7 @@ public class AssignmentDao {
 
     //学生查看作业
     public List<AssignmentDTO> queryWork(int studentId) throws SQLException {
-        PreparedStatement psm = connection.prepareStatement("select ass.assignment_title, ass.assignment_description, " +
+        PreparedStatement psm = connection.prepareStatement("select ass.assignment_id,ass.assignment_title, ass.assignment_description, " +
                 "ass.assignment_deadline, ass.assignment_subject " +
                 "from assignments ass JOIN students stu on" +
                 " ass.assignment_class = stu.student_class where stu.student_id = ?");
@@ -68,6 +68,7 @@ public class AssignmentDao {
         List<AssignmentDTO> assignmentDTOS = new ArrayList<AssignmentDTO>();
         while (rs.next()) {
             AssignmentDTO assignmentDTO = new AssignmentDTO();
+            assignmentDTO.setAssignmentId(rs.getString("assignment_id"));
             assignmentDTO.setAssignmentTitle(rs.getString("assignment_title"));
             assignmentDTO.setAssignmentDescription(rs.getString("assignment_description"));
             assignmentDTO.setAssignmentDeadLine(rs.getDate("assignment_deadline"));
@@ -75,5 +76,18 @@ public class AssignmentDao {
             assignmentDTOS.add(assignmentDTO);
         }
         return assignmentDTOS;
+    }
+
+    //老师修改截至时间
+    public void modify(Assignment assignment) throws SQLException {
+
+        java.sql.Date deadLineDate = new java.sql.Date(assignment.getAssignmentDeadLine().getTime());
+        PreparedStatement preparedStatement = connection
+                .prepareStatement("update assignments set assignment_deadline =? where assignment_id =?");
+
+        preparedStatement.setDate(1, deadLineDate);
+        preparedStatement.setInt(2,assignment.getAssignmentId());
+
+        preparedStatement.executeUpdate();
     }
 }

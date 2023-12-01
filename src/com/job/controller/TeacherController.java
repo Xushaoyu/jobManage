@@ -14,7 +14,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -60,6 +59,7 @@ public class TeacherController extends BaseController {
         this.urlMethodMap.put("publishJob", "POST");
         this.urlMethodMap.put("querySubDTO", "GET");
         this.urlMethodMap.put("mark", "POST");
+        this.urlMethodMap.put("modify", "POST");
         super.urlMethodMap = urlMethodMap;
     }
 
@@ -160,5 +160,29 @@ public class TeacherController extends BaseController {
         //3、将修改结果返回浏览器
         ResponseData responseData = new ResponseData();
         responseData.writeResponseData(resp, "批改成功");
+    }
+
+    //修改截至时间
+    public void modify(HttpServletRequest req, HttpServletResponse resp) throws ParseException, SQLException, IOException {
+        Assignment assignment = new Assignment();
+        ResponseData responseData = new ResponseData();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        Date assignmentDeadline = dateFormat.parse(req.getParameter("assignmentDeadline")) ;
+        String[] userInfo = Common.getUserInfoFromCookies(req);
+        int assignmentId = Integer.parseInt(req.getParameter("assignmentId"));
+
+
+        assignment.setAssignmentDeadLine(assignmentDeadline);
+        assignment.setTeaId(Integer.parseInt(userInfo[1]));
+        assignment.setAssignmentId(assignmentId);
+
+        try {
+            assignmentDao.modify(assignment);
+        }catch (Exception e){
+            responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
+            return;
+        }
+        responseData.writeResponseData(resp, "修改成功");
     }
 }

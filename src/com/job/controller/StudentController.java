@@ -2,6 +2,7 @@ package com.job.controller;
 
 import com.job.dao.AssignmentDao;
 import com.job.dao.StudentDao;
+import com.job.dao.SubmissionDao;
 import com.job.model.Assignment;
 import com.job.model.AssignmentDTO;
 import com.job.model.Student;
@@ -41,16 +42,19 @@ public class StudentController extends BaseController {
      */
     private final StudentDao studentDao;
     private final AssignmentDao assignmentDao;
+    private final SubmissionDao submissionDao;
 
 
     public StudentController() {
         super();
         this.studentDao = new StudentDao();
+        this.submissionDao = new SubmissionDao();
         this.assignmentDao = new AssignmentDao();
         this.urlMethodMap.put("queryStudentById", "GET");
         this.urlMethodMap.put("login", "GET");
         this.urlMethodMap.put("register", "POST");
         this.urlMethodMap.put("queryWork", "GET");
+        this.urlMethodMap.put("commitWork", "POST");
         super.urlMethodMap = urlMethodMap;
     }
 
@@ -132,5 +136,43 @@ public class StudentController extends BaseController {
         //输出到浏览器
         ResponseData responseData = new ResponseData();
         responseData.writeResponseData(resp,assignmentDTOS.toString());
+    }
+
+    /*****学生提交作业*****/
+    public void commitWork(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
+        //拿到请求传来的参数
+        //通过传一个subDTO对象将参数传入
+        ResponseData responseData = new ResponseData();
+        subDTO subdto = new subDTO();
+        //拿到学生id
+        String[] userInfo = Common.getUserInfoFromCookies(req);
+        int studentId = Integer.parseInt(userInfo[1]);
+        // 获取作业ID作为字符串
+        String assignmentIdStr = req.getParameter("assignmentId");
+        // 将作业ID字符串转换为整数
+        int assignmentId = Integer.parseInt(assignmentIdStr);
+        // 然后使用该整数值设置DTO的作业ID
+
+        try {
+            subdto.setStuId(studentId);
+            subdto.setAssignmentId(assignmentId);
+            subdto.setFilePath(req.getParameter("filePath"));
+        }catch (Exception e) {
+            responseData.writeResponseData(resp, 400, "params is invalid", e.getMessage());
+            return;
+        }
+        try {
+            submissionDao.commit(subdto);
+
+        } catch (SQLException e) {
+            // 新增失败时返回失败
+            responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
+            return;
+        }
+        responseData.writeResponseData(resp, "新增成功");
+
+        //使用传来的参数执行插入语句
+
+        //根据返回结果显示成功与否
     }
 }

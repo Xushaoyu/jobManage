@@ -25,13 +25,18 @@ public class Authority {
     private final List<String> student_power = Arrays.asList("StudentController/queryStudentById"
             , "StudentController/addStudent"
             , "StudentController/queryStudentById"
-            , "StudentController/queryWork");
+            , "StudentController/queryWork"
+            , "StudentController/commitWork"
+    );
 
     /*
         老师权限数组：类名加方法名
      */
 
-    private final List<String> teacher_power = Arrays.asList("TeacherController/publishJob", "TeacherController/querySubDTO", "TeacherController/mark");
+    private final List<String> teacher_power = Arrays.asList("TeacherController/publishJob",
+            "TeacherController/querySubDTO",
+            "TeacherController/mark",
+            "TeacherController/modify");
 
     public Authority() {
         this.studentDao = new StudentDao();

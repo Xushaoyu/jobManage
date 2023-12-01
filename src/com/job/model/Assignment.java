@@ -3,6 +3,7 @@ package com.job.model;
 import java.util.Date;
 
 public class Assignment {
+    private int assignmentId;
     private String assignmentTitle;
     private String assignmentDescription;
     private Date assignmentDeadLine;
@@ -15,7 +16,8 @@ public class Assignment {
     @Override
     public String toString() {
         return "Assignment{" +
-                "assignmentTitle='" + assignmentTitle + '\'' +
+                "assignmentId=" + assignmentId +
+                ", assignmentTitle='" + assignmentTitle + '\'' +
                 ", assignmentDescription='" + assignmentDescription + '\'' +
                 ", assignmentDeadLine=" + assignmentDeadLine +
                 ", assignmentSubject='" + assignmentSubject + '\'' +
@@ -24,6 +26,14 @@ public class Assignment {
                 ", updateTime=" + updateTime +
                 ", createTime=" + createTime +
                 '}';
+    }
+
+    public int getAssignmentId() {
+        return assignmentId;
+    }
+
+    public void setAssignmentId(int assignmentId) {
+        this.assignmentId = assignmentId;
     }
 
     public String getAssignmentTitle() {
@@ -42,12 +52,12 @@ public class Assignment {
         this.assignmentDescription = assignmentDescription;
     }
 
-    public void setAssignmentDeadLine(Date assignmentDeadLine) {
-        this.assignmentDeadLine = assignmentDeadLine;
-    }
-
     public Date getAssignmentDeadLine() {
         return assignmentDeadLine;
+    }
+
+    public void setAssignmentDeadLine(Date assignmentDeadLine) {
+        this.assignmentDeadLine = assignmentDeadLine;
     }
 
     public String getAssignmentSubject() {
