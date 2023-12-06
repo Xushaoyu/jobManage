@@ -5,7 +5,6 @@ import com.job.dao.StudentDao;
 import com.job.dao.SubmissionDao;
 import com.job.model.AssignmentDTO;
 import com.job.model.Student;
-import com.job.model.subDTO;
 import com.job.util.*;
 
 import javax.servlet.annotation.WebServlet;
@@ -87,7 +86,6 @@ public class StudentController extends BaseController {
             } else {
                 String studentInfo = student.getStudentNumber() + "==" + student.getStudentId() + "==student";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(studentInfo));
-                System.out.println(Base64Util.encryptBASE64(studentInfo));
                 cookie.setMaxAge(60 * 60 * 24);
                 resp.addCookie(cookie);
                 responseData.writeResponseData(resp, "登录成功");
@@ -131,8 +129,8 @@ public class StudentController extends BaseController {
     public void queryWork(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
         //拿到学生id
         String[] userInfo = Common.getUserInfoFromCookies(req);
+        assert userInfo != null;
         int studentId = Integer.parseInt(userInfo[1]);
-        System.out.println("学生id:"+studentId);
         //调用DAO层拿结果
         List<AssignmentDTO> assignmentDTOS = assignmentDao.queryWork(studentId);
         //输出到浏览器

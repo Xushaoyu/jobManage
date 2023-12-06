@@ -7,9 +7,12 @@ import com.job.model.Teacher;
 import com.job.util.Common;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Properties;
 
 /*
     认证和权限
@@ -48,6 +51,7 @@ public class Authority {
      */
     public Boolean verify(HttpServletRequest req, String className, String methodName) {
         String url = className + "/" + methodName;
+        System.out.println("current verify method:" +  url);
 
         String[] userInfo = Common.getUserInfoFromCookies(req);
         if (userInfo == null){
@@ -56,22 +60,33 @@ public class Authority {
         String number = userInfo[0];
         String id = userInfo[1];
         String role = userInfo[2];
+
+        Properties prop = new Properties();
+        InputStream inputStream = Authority.class.getClassLoader().getResourceAsStream("/servlet.properties");
+        try {
+            prop.load(inputStream);
+        } catch (IOException e) {
+            return false;
+        }
+
         // 根据当前角色判断是否有权限，如果有权限，检查数据库用户是否存在
         try {
             if (Objects.equals(role, "student")){
+                List<String> student_power = Arrays.asList(prop.getProperty("student_power").split(","));
                 if (!student_power.contains(url)){
                     return false;
                 }
                 Student student;
                 student = studentDao.verify(Integer.parseInt(id), number);
-                return student.getStudentId() != 0;
+                return student != null;
             } else if (Objects.equals(role, "teacher")){
+                List<String> teacher_power = Arrays.asList(prop.getProperty("teacher_power").split(","));
                 if (!teacher_power.contains(url)){
                     return false;
                 }
                 Teacher teacher;
                 teacher = teacherDao.verify(Integer.parseInt(id), number);
-                return teacher.getTeacherId() != 0;
+                return teacher != null;
             }
         } catch (Exception e) {
             System.out.println("verify fail");

@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -75,7 +74,7 @@ public class TeacherController extends BaseController {
     }
 
     //通过教师号和密码登录
-    public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException, NoSuchAlgorithmException {
+    public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
         MD5Generate md5 = new MD5Generate();
         try {
@@ -86,7 +85,6 @@ public class TeacherController extends BaseController {
             } else {
                 String teacherInfo= teacher.getTeacherNumber() + "==" + teacher.getTeacherId() + "==teacher";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(teacherInfo));
-                System.out.println(Base64Util.encryptBASE64(teacherInfo));
                 cookie.setMaxAge(60 * 60 * 24);
                 resp.addCookie(cookie);
                 responseData.writeResponseData(resp, "登录成功");
@@ -134,6 +132,7 @@ public class TeacherController extends BaseController {
         assignment.setAssignmentSubject(req.getParameter("assignmentSubject"));
         assignment.setAssignmentClass(req.getParameter("assignmentClass"));
         String[] userInfo = Common.getUserInfoFromCookies(req);
+        assert userInfo != null;
         assignment.setTeaId(Integer.parseInt(userInfo[1]));
         assignmentDao.publish(assignment);
     }
@@ -142,6 +141,7 @@ public class TeacherController extends BaseController {
     public void querySubDTO(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
         //拿到老师Id
         String[] userInfo = Common.getUserInfoFromCookies(req);
+        assert userInfo != null;
         int teacherId = Integer.parseInt(userInfo[1]);
         //调用DAO层拿结果
         List<subDTO> subDTOS = assignmentDao.querySubDTO(teacherId);
