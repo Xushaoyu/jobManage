@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -122,7 +123,7 @@ public class TeacherController extends BaseController {
     }
 
     //发布作业
-    public void publishJob(HttpServletRequest req, HttpServletResponse resp) throws ParseException, SQLException {
+    public void publishJob(HttpServletRequest req, HttpServletResponse resp) throws ParseException, SQLException, IOException {
         Assignment assignment = new Assignment();
         //yyyy-MM-dd HH:mm:ss
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -135,9 +136,11 @@ public class TeacherController extends BaseController {
         assert userInfo != null;
         assignment.setTeaId(Integer.parseInt(userInfo[1]));
         assignmentDao.publish(assignment);
+        ResponseData responseData = new ResponseData();
+        responseData.writeResponseData(resp, "发布成功");
     }
 
-    //老师查看作业
+    //老师查看已提交作业
     public void querySubDTO(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
         //拿到老师Id
         String[] userInfo = Common.getUserInfoFromCookies(req);
@@ -174,6 +177,7 @@ public class TeacherController extends BaseController {
 
 
         assignment.setAssignmentDeadLine(assignmentDeadline);
+        assert userInfo != null;
         assignment.setTeaId(Integer.parseInt(userInfo[1]));
         assignment.setAssignmentId(assignmentId);
 

@@ -36,7 +36,7 @@ public class AssignmentDao {
         preparedStatement.setDate(8, date);
         preparedStatement.executeUpdate();
     }
-    //老师查看作业
+    //老师查看已提交的作业
     public List<subDTO> querySubDTO(int teacherId) throws SQLException {
         PreparedStatement psm = connection.prepareStatement("select sub.submission_id,stu.student_name,ass.assignment_title,sub.submission_date,sub.file_path from teachers tea join assignments ass on tea.teacher_id=ass.tea_id\n" +
                 "join submissions sub on sub.assignment_id =ass.assignment_id\n" +

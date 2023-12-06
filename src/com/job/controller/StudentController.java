@@ -5,6 +5,7 @@ import com.job.dao.StudentDao;
 import com.job.dao.SubmissionDao;
 import com.job.model.AssignmentDTO;
 import com.job.model.Student;
+import com.job.model.subDTO;
 import com.job.util.*;
 
 import javax.servlet.annotation.WebServlet;
@@ -146,6 +147,7 @@ public class StudentController extends BaseController {
         subDTO subdto = new subDTO();
         //拿到学生id
         String[] userInfo = Common.getUserInfoFromCookies(req);
+        assert userInfo != null;
         int studentId = Integer.parseInt(userInfo[1]);
         // 获取作业ID作为字符串
         String assignmentIdStr = req.getParameter("assignmentId");

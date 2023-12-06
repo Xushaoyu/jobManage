@@ -22,25 +22,6 @@ public class Authority {
 
     private final TeacherDao teacherDao;
 
-    /*
-        学生权限数组：类名加方法名
-     */
-    private final List<String> student_power = Arrays.asList("StudentController/queryStudentById"
-            , "StudentController/addStudent"
-            , "StudentController/queryStudentById"
-            , "StudentController/queryWork"
-            , "StudentController/commitWork"
-    );
-
-    /*
-        老师权限数组：类名加方法名
-     */
-
-    private final List<String> teacher_power = Arrays.asList("TeacherController/publishJob",
-            "TeacherController/querySubDTO",
-            "TeacherController/mark",
-            "TeacherController/modify");
-
     public Authority() {
         this.studentDao = new StudentDao();
         this.teacherDao = new TeacherDao();
@@ -51,7 +32,6 @@ public class Authority {
      */
     public Boolean verify(HttpServletRequest req, String className, String methodName) {
         String url = className + "/" + methodName;
-        System.out.println("current verify method:" +  url);
 
         String[] userInfo = Common.getUserInfoFromCookies(req);
         if (userInfo == null){
@@ -72,7 +52,7 @@ public class Authority {
         // 根据当前角色判断是否有权限，如果有权限，检查数据库用户是否存在
         try {
             if (Objects.equals(role, "student")){
-                List<String> student_power = Arrays.asList(prop.getProperty("student_power").split(","));
+                List<String> student_power = Arrays.asList(prop.getProperty("student_power").split(", "));
                 if (!student_power.contains(url)){
                     return false;
                 }
@@ -80,7 +60,7 @@ public class Authority {
                 student = studentDao.verify(Integer.parseInt(id), number);
                 return student != null;
             } else if (Objects.equals(role, "teacher")){
-                List<String> teacher_power = Arrays.asList(prop.getProperty("teacher_power").split(","));
+                List<String> teacher_power = Arrays.asList(prop.getProperty("teacher_power").split(", "));
                 if (!teacher_power.contains(url)){
                     return false;
                 }
