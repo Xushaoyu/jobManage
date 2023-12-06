@@ -38,7 +38,7 @@ public class AssignmentDao {
     }
     //老师查看作业
     public List<subDTO> querySubDTO(int teacherId) throws SQLException {
-        PreparedStatement psm = connection.prepareStatement("select sub.submission_id,stu.student_name,ass.assignment_title,sub.submission_date,sub.file_path from teachers tea join assignments ass on tea.teacher_id=ass.tea_id\n" +
+        PreparedStatement psm = connection.prepareStatement("select stu.student_id,sub.assignment_id,sub.submission_id,stu.student_name,ass.assignment_title,sub.submission_date,sub.file_path from teachers tea join assignments ass on tea.teacher_id=ass.tea_id\n" +
                 "join submissions sub on sub.assignment_id =ass.assignment_id\n" +
                 "join students stu on stu.student_id = sub.student_id\n" +
                 "where tea.teacher_id = ?");
@@ -48,6 +48,8 @@ public class AssignmentDao {
         if (rs.next()) {
             subDTO subDTO = new subDTO();
             subDTO.setSubId(rs.getInt("submission_id"));
+            subDTO.setStuId(rs.getInt("student_id"));
+            subDTO.setAssignmentId(rs.getInt("assignment_id"));
             subDTO.setStuName(rs.getString("student_name"));
             subDTO.setAssignTitle(rs.getString("assignment_title"));
             subDTO.setSubDate(rs.getDate("submission_date"));
