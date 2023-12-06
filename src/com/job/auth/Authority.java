@@ -48,7 +48,6 @@ public class Authority {
      */
     public Boolean verify(HttpServletRequest req, String className, String methodName) {
         String url = className + "/" + methodName;
-        System.out.println("current verify method:" +  url);
 
         String[] userInfo = Common.getUserInfoFromCookies(req);
         if (userInfo == null){
@@ -57,7 +56,6 @@ public class Authority {
         String number = userInfo[0];
         String id = userInfo[1];
         String role = userInfo[2];
-        System.out.println(userInfo);
         // 根据当前角色判断是否有权限，如果有权限，检查数据库用户是否存在
         try {
             if (Objects.equals(role, "student")){

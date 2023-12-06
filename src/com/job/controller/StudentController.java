@@ -3,7 +3,6 @@ package com.job.controller;
 import com.job.dao.AssignmentDao;
 import com.job.dao.StudentDao;
 import com.job.dao.SubmissionDao;
-import com.job.model.Assignment;
 import com.job.model.AssignmentDTO;
 import com.job.model.Student;
 import com.job.model.subDTO;
@@ -14,7 +13,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +63,11 @@ public class StudentController extends BaseController {
         ResponseData responseData = new ResponseData();
         try {
             Student student = studentDao.getStudentById(Integer.parseInt(req.getParameter("studentId")));
-            responseData.writeResponseData(resp, student.toString());
+            if (student == null){
+                responseData.writeResponseData(resp, 400, "student not found", null);
+            } else {
+                responseData.writeResponseData(resp, student.toString());
+            }
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
         }
