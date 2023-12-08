@@ -1,6 +1,5 @@
 package com.job.dao;
 
-import com.job.model.Student;
 import com.job.model.Teacher;
 import com.job.util.DBUtil;
 

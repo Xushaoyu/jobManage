@@ -19,7 +19,7 @@ public class DBUtil {
         else {
             try {
                 Properties prop = new Properties();
-                InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream("/db.properties");
+                InputStream inputStream = DBUtil.class.getClassLoader().getResourceAsStream("/servlet.properties");
                 prop.load(inputStream);
                 String driver = prop.getProperty("driver");
                 String url = prop.getProperty("url");

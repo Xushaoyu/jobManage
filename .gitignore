@@ -1,4 +1,4 @@
 .idea
 .out
-src/db.properties
+src/servlet.properties
 .DS_Store

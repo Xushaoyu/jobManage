@@ -3,7 +3,6 @@ package com.job.controller;
 import com.job.dao.AssignmentDao;
 import com.job.dao.StudentDao;
 import com.job.dao.SubmissionDao;
-import com.job.model.Assignment;
 import com.job.model.AssignmentDTO;
 import com.job.model.Student;
 import com.job.model.subDTO;
@@ -14,7 +13,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +63,11 @@ public class StudentController extends BaseController {
         ResponseData responseData = new ResponseData();
         try {
             Student student = studentDao.getStudentById(Integer.parseInt(req.getParameter("studentId")));
-            responseData.writeResponseData(resp, student.toString());
+            if (student == null){
+                responseData.writeResponseData(resp, 400, "student not found", null);
+            } else {
+                responseData.writeResponseData(resp, student.toString());
+            }
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
         }
@@ -85,7 +87,6 @@ public class StudentController extends BaseController {
             } else {
                 String studentInfo = student.getStudentNumber() + "==" + student.getStudentId() + "==student";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(studentInfo));
-                System.out.println(Base64Util.encryptBASE64(studentInfo));
                 cookie.setMaxAge(60 * 60 * 24);
                 resp.addCookie(cookie);
                 responseData.writeResponseData(resp, "登录成功");
@@ -129,8 +130,8 @@ public class StudentController extends BaseController {
     public void queryWork(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException {
         //拿到学生id
         String[] userInfo = Common.getUserInfoFromCookies(req);
+        assert userInfo != null;
         int studentId = Integer.parseInt(userInfo[1]);
-        System.out.println("学生id:"+studentId);
         //调用DAO层拿结果
         List<AssignmentDTO> assignmentDTOS = assignmentDao.queryWork(studentId);
         //输出到浏览器
@@ -146,6 +147,7 @@ public class StudentController extends BaseController {
         subDTO subdto = new subDTO();
         //拿到学生id
         String[] userInfo = Common.getUserInfoFromCookies(req);
+        assert userInfo != null;
         int studentId = Integer.parseInt(userInfo[1]);
         // 获取作业ID作为字符串
         String assignmentIdStr = req.getParameter("assignmentId");
