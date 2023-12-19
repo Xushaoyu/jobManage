@@ -9,13 +9,13 @@ import java.nio.file.StandardCopyOption;
 
 public class FileProcessor {
 
-    private String uploadDirectory;
+    private final String uploadDirectory;
 
     public FileProcessor(String uploadDirectory) {
         this.uploadDirectory = uploadDirectory;
     }
 
-    public Boolean processFile(Part filePart) {
+    public String processFile(Part filePart) {
         try {
             // 处理文件项
             String fileName = getSubmittedFileName(filePart);
@@ -26,10 +26,10 @@ public class FileProcessor {
                 Files.copy(input, new File(filePath).toPath(), StandardCopyOption.REPLACE_EXISTING);
             }
 
-            return true;
+            return fileName;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return "";
         }
     }
 
