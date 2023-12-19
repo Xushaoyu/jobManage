@@ -8,17 +8,21 @@ import com.job.model.Student;
 import com.job.model.subDTO;
 import com.job.util.*;
 
+import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-
 @WebServlet("/student/*")
+@MultipartConfig
 public class StudentController extends BaseController {
     /*
         生成接口唯一标识符
@@ -63,7 +67,7 @@ public class StudentController extends BaseController {
         ResponseData responseData = new ResponseData();
         try {
             Student student = studentDao.getStudentById(Integer.parseInt(req.getParameter("studentId")));
-            if (student == null){
+            if (student == null) {
                 responseData.writeResponseData(resp, 400, "student not found", null);
             } else {
                 responseData.writeResponseData(resp, student.toString());
@@ -136,11 +140,11 @@ public class StudentController extends BaseController {
         List<AssignmentDTO> assignmentDTOS = assignmentDao.queryWork(studentId);
         //输出到浏览器
         ResponseData responseData = new ResponseData();
-        responseData.writeResponseData(resp,assignmentDTOS.toString());
+        responseData.writeResponseData(resp, assignmentDTOS.toString());
     }
 
     /*****学生提交作业*****/
-    public void commitWork(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
+    public void commitWork(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException, ServletException {
         //拿到请求传来的参数
         //通过传一个subDTO对象将参数传入
         ResponseData responseData = new ResponseData();
@@ -149,32 +153,22 @@ public class StudentController extends BaseController {
         String[] userInfo = Common.getUserInfoFromCookies(req);
         assert userInfo != null;
         int studentId = Integer.parseInt(userInfo[1]);
-        // 获取作业ID作为字符串
-        String assignmentIdStr = req.getParameter("assignmentId");
-        // 将作业ID字符串转换为整数
-        int assignmentId = Integer.parseInt(assignmentIdStr);
-        // 然后使用该整数值设置DTO的作业ID
 
-        try {
-            subdto.setStuId(studentId);
-            subdto.setAssignmentId(assignmentId);
-            subdto.setFilePath(req.getParameter("filePath"));
-        }catch (Exception e) {
-            responseData.writeResponseData(resp, 400, "params is invalid", e.getMessage());
-            return;
+        // 获取上传文件文件的输入流
+        String uploadDirectory = new File(getServletContext().getRealPath("/")).getAbsolutePath();
+        FileProcessor fileProcessor = new FileProcessor(uploadDirectory);
+        Part filePart = req.getPart("file");
+        // 在需要的地方调用 FileProcessor 的方法
+        Boolean result = fileProcessor.processFile(filePart);
+        if (!result) {
+            responseData.writeResponseData(resp, 400, "文件流处理失败", "upload fail");
         }
-        try {
-            submissionDao.commit(subdto);
 
-        } catch (SQLException e) {
-            // 新增失败时返回失败
-            responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
-            return;
-        }
+        subdto.setStuId(studentId);
+        subdto.setAssignmentId(Integer.parseInt(req.getParameter("assignmentId")));
+
+        submissionDao.commit(subdto);
+
         responseData.writeResponseData(resp, "新增成功");
-
-        //使用传来的参数执行插入语句
-
-        //根据返回结果显示成功与否
     }
 }
