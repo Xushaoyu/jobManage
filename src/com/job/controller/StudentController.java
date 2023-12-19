@@ -3,7 +3,7 @@ package com.job.controller;
 import com.job.dao.AssignmentDao;
 import com.job.dao.StudentDao;
 import com.job.dao.SubmissionDao;
-import com.job.model.AssignmentDTO;
+import com.job.model.Assignment;
 import com.job.model.Student;
 import com.job.model.subDTO;
 import com.job.util.*;
@@ -133,10 +133,10 @@ public class StudentController extends BaseController {
         assert userInfo != null;
         int studentId = Integer.parseInt(userInfo[1]);
         //调用DAO层拿结果
-        List<AssignmentDTO> assignmentDTOS = assignmentDao.queryWork(studentId);
+        List<Assignment> assignments = assignmentDao.queryWork(studentId);
         //输出到浏览器
         ResponseData responseData = new ResponseData();
-        responseData.writeResponseData(resp,assignmentDTOS.toString());
+        responseData.writeResponseData(resp,assignments.toString());
     }
 
     /*****学生提交作业*****/

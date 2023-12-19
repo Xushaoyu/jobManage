@@ -1,7 +1,6 @@
 package com.job.dao;
 
 import com.job.model.Assignment;
-import com.job.model.AssignmentDTO;
 import com.job.model.subDTO;
 import com.job.util.DBUtil;
 
@@ -60,17 +59,17 @@ public class AssignmentDao {
     }
 
     //学生查看作业
-    public List<AssignmentDTO> queryWork(int studentId) throws SQLException {
+    public List<Assignment> queryWork(int studentId) throws SQLException {
         PreparedStatement psm = connection.prepareStatement("select ass.assignment_id,ass.assignment_title, ass.assignment_description, " +
                 "ass.assignment_deadline, ass.assignment_subject " +
                 "from assignments ass JOIN students stu on" +
                 " ass.assignment_class = stu.student_class where stu.student_id = ?");
         psm.setInt(1,studentId);
         ResultSet rs = psm.executeQuery();
-        List<AssignmentDTO> assignmentDTOS = new ArrayList<AssignmentDTO>();
+        List<Assignment> assignmentDTOS = new ArrayList<Assignment>();
         while (rs.next()) {
-            AssignmentDTO assignmentDTO = new AssignmentDTO();
-            assignmentDTO.setAssignmentId(rs.getString("assignment_id"));
+            Assignment assignmentDTO = new Assignment();
+            assignmentDTO.setAssignmentId(rs.getInt("assignment_id"));
             assignmentDTO.setAssignmentTitle(rs.getString("assignment_title"));
             assignmentDTO.setAssignmentDescription(rs.getString("assignment_description"));
             assignmentDTO.setAssignmentDeadLine(rs.getDate("assignment_deadline"));
