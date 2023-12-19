@@ -2,6 +2,9 @@ package com.job.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Assignment {
     private int assignmentId;
     private String assignmentTitle;
