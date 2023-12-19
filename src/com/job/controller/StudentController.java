@@ -114,6 +114,4 @@ public class StudentController extends BaseController {
         }
         responseData.writeResponseData(resp, "新增成功");
     }
-
-
 }
