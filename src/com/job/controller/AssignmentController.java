@@ -59,6 +59,8 @@ public class AssignmentController  extends BaseController{
         this.urlMethodMap.put("querySubDTO", "GET");
         this.urlMethodMap.put("mark", "POST");
         this.urlMethodMap.put("modify", "POST");
+        this.urlMethodMap.put("queryWorkByCourseStuId", "GET");
+        this.urlMethodMap.put("queryStatus", "GET");
         super.urlMethodMap = urlMethodMap;
     }
 
@@ -72,7 +74,7 @@ public class AssignmentController  extends BaseController{
         List<Assignment> assignments = assignmentDao.queryWork(studentId);
         //输出到浏览器
         ResponseData responseData = new ResponseData();
-        responseData.writeResponseData(resp,assignments.toString());
+        responseData.writeResponseData(resp,assignments.toString(),true);
     }
 
     /*****学生提交作业*****/
@@ -171,5 +173,32 @@ public class AssignmentController  extends BaseController{
             return;
         }
         responseData.writeResponseData(resp, "修改成功");
+    }
+
+    //通过课程id和学生id查看作业
+    public void queryWorkByCourseStuId(HttpServletRequest req, HttpServletResponse resp) throws ParseException, IOException {
+        int courseId = Integer.parseInt(req.getParameter("courseId"));
+        String[] userInfo = Common.getUserInfoFromCookies(req);
+        ResponseData responseData = new ResponseData();
+        int studentId = Integer.parseInt(userInfo[1]);
+        try {
+            List<Assignment> assignments = assignmentDao.queryWorkByCourseStuId(courseId, studentId);
+            responseData.writeResponseData(resp, assignments.toString(),true);
+        }catch (Exception e){
+            responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
+            return;
+        }
+    }
+
+    public void queryStatus(HttpServletRequest req, HttpServletResponse resp) throws ParseException, IOException {
+        int assignmentId = Integer.parseInt(req.getParameter("assignmentId"));
+        ResponseData responseData = new ResponseData();
+        try {
+            int status = assignmentDao.queryStatus(assignmentId);
+            responseData.writeResponseData(resp, String.valueOf(status) ,true);
+        }catch (Exception e){
+            responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
+            return;
+        }
     }
 }

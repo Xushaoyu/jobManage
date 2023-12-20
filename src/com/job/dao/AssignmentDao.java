@@ -91,4 +91,38 @@ public class AssignmentDao {
 
         preparedStatement.executeUpdate();
     }
+
+    //通过课程id和学生id查看作业
+    public List<Assignment> queryWorkByCourseStuId(int courseId, int studentId) throws SQLException {
+        PreparedStatement psm = connection.prepareStatement("select ass.assignment_id,ass.assignment_title, ass.assignment_description, " +
+                "ass.assignment_deadline, ass.assignment_subject " +
+                "from assignments ass JOIN students stu on" +
+                " ass.assignment_class = stu.student_class where stu.student_id = ? and ass.course_id = ?");
+        psm.setInt(1,studentId);
+        psm.setInt(2,courseId);
+        ResultSet rs = psm.executeQuery();
+        List<Assignment> assignmentDTOS = new ArrayList<Assignment>();
+        while (rs.next()) {
+            Assignment assignmentDTO = new Assignment();
+            assignmentDTO.setAssignmentId(rs.getInt("assignment_id"));
+            assignmentDTO.setAssignmentTitle(rs.getString("assignment_title"));
+            assignmentDTO.setAssignmentDescription(rs.getString("assignment_description"));
+            assignmentDTO.setAssignmentDeadLine(rs.getDate("assignment_deadline"));
+            assignmentDTO.setAssignmentSubject(rs.getString("assignment_subject"));
+            assignmentDTOS.add(assignmentDTO);
+        }
+        return assignmentDTOS;
+    }
+
+    //通过作业id查看,提交表里的提交状态
+    public int queryStatus(int assignmentId) throws SQLException {
+        PreparedStatement psm = connection.prepareStatement("select status from submissions where assignment_id = ? LIMIT 1");
+        psm.setInt(1,assignmentId);
+        ResultSet rs = psm.executeQuery();
+        int status = -1;
+        while (rs.next()) {
+            status = rs.getInt("status");
+        }
+        return status;
+    }
 }
