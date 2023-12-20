@@ -11,6 +11,7 @@ import com.job.util.FileProcessor;
 import com.job.util.ResponseData;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @WebServlet("/assignment/*")
+@MultipartConfig
 public class AssignmentController  extends BaseController{
     /*
     生成接口唯一标识符
@@ -90,17 +92,22 @@ public class AssignmentController  extends BaseController{
         int studentId = Integer.parseInt(userInfo[1]);
 
         // 获取上传文件文件的输入流
-        String uploadDirectory = new File(getServletContext().getRealPath("/")).getAbsolutePath();
-        FileProcessor fileProcessor = new FileProcessor(uploadDirectory);
+        String pathDir = "assignment";
         Part filePart = req.getPart("file");
+        String staticFilePath = new File(getServletContext().getRealPath("")).getParentFile().getParentFile().getParentFile()+ File.separator + "statics";
+        String uploadDirectory = staticFilePath +  File.separator + pathDir;
+        FileProcessor fileProcessor = new FileProcessor(uploadDirectory);
         // 在需要的地方调用 FileProcessor 的方法
-        Boolean result = fileProcessor.processFile(filePart);
-        if (!result) {
+        String fileName = fileProcessor.processFile(filePart);
+        if (fileName.equals("")) {
             responseData.writeResponseData(resp, 400, "文件流处理失败", "upload fail");
         }
+        String fileUrl = this.nginxUrl + pathDir + "/" + fileName;
+
 
         subdto.setStuId(studentId);
         subdto.setAssignmentId(Integer.parseInt(req.getParameter("assignmentId")));
+        subdto.setFilePath(fileUrl);
 
         submissionDao.commit(subdto);
 
