@@ -108,6 +108,8 @@ public class AssignmentController  extends BaseController{
         subdto.setStuId(studentId);
         subdto.setAssignmentId(Integer.parseInt(req.getParameter("assignmentId")));
         subdto.setFilePath(fileUrl);
+        //修改作业,1为已提交
+        subdto.setStatus(1);
 
         submissionDao.commit(subdto);
 

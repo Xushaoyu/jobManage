@@ -10,7 +10,7 @@ public class subDTO {
     String assignTitle;
     Date subDate;
     String filePath;
-
+    int status;
 
     @Override
     public String toString() {
@@ -22,6 +22,7 @@ public class subDTO {
                 ", assignTitle='" + assignTitle + '\'' +
                 ", subDate=" + subDate +
                 ", filePath='" + filePath + '\'' +
+                ", status=" + status +
                 '}';
     }
 
@@ -81,4 +82,11 @@ public class subDTO {
         this.filePath = filePath;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

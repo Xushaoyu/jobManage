@@ -27,8 +27,13 @@ public class SubmissionDao {
         //将传来的参数执行sql
         Date date = new java.sql.Date(System.currentTimeMillis());
         PreparedStatement preparedStatement=connection
-                .prepareStatement("insert into submissions(student_id,assignment_id,submission_date,file_path,update_time,create_time)\n" +
-                        "value(?,?,?,?,?,?)");
+                .prepareStatement("insert into submissions(student_id,assignment_id,submission_date,file_path,update_time,create_time,status)\n" +
+                        "value(?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE\n" +
+                        "submission_date = VALUES(submission_date)" +
+                        ",file_path = VALUES(file_path)" +
+                        ",update_time = VALUES(update_time)" +
+                        ",create_time = VALUES(create_time)" +
+                        ",status = VALUES(status);");
 
         preparedStatement.setInt(1,subdto.getStuId());
         preparedStatement.setInt(2,subdto.getAssignmentId());
@@ -36,6 +41,7 @@ public class SubmissionDao {
         preparedStatement.setString(4,subdto.getFilePath());
         preparedStatement.setDate(5,date);
         preparedStatement.setDate(6,date);
+        preparedStatement.setInt(7,subdto.getStatus());
         preparedStatement.executeUpdate();
     }
 }
