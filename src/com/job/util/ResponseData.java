@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 public class ResponseData {
 
     public void writeResponseData(HttpServletResponse resp, int code, String message, String data) throws IOException {
-        String ResponseData = "ResponseData{" +
+        String ResponseData = "{" +
                               "code=" + code +
                               ", message='" + message + '\'' +
                               ", data='" + data + '\'' +
@@ -21,7 +21,7 @@ public class ResponseData {
     }
 
     public void writeResponseData(HttpServletResponse resp, String data) throws IOException {
-        String ResponseData = "ResponseData{" +
+        String ResponseData = "{" +
                               "code=" + "200" +
                               ", message='" + "success" + '\'' +
                               ", data='" + data + '\'' +

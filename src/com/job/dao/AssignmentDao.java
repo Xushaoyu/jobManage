@@ -1,7 +1,6 @@
 package com.job.dao;
 
 import com.job.model.Assignment;
-import com.job.model.AssignmentDTO;
 import com.job.model.subDTO;
 import com.job.util.DBUtil;
 
@@ -36,9 +35,9 @@ public class AssignmentDao {
         preparedStatement.setDate(8, date);
         preparedStatement.executeUpdate();
     }
-    //老师查看作业
+    //老师查看已提交的作业
     public List<subDTO> querySubDTO(int teacherId) throws SQLException {
-        PreparedStatement psm = connection.prepareStatement("select sub.submission_id,stu.student_name,ass.assignment_title,sub.submission_date,sub.file_path from teachers tea join assignments ass on tea.teacher_id=ass.tea_id\n" +
+        PreparedStatement psm = connection.prepareStatement("select stu.student_id,sub.assignment_id,sub.submission_id,stu.student_name,ass.assignment_title,sub.submission_date,sub.file_path from teachers tea join assignments ass on tea.teacher_id=ass.tea_id\n" +
                 "join submissions sub on sub.assignment_id =ass.assignment_id\n" +
                 "join students stu on stu.student_id = sub.student_id\n" +
                 "where tea.teacher_id = ?");
@@ -48,6 +47,8 @@ public class AssignmentDao {
         if (rs.next()) {
             subDTO subDTO = new subDTO();
             subDTO.setSubId(rs.getInt("submission_id"));
+            subDTO.setStuId(rs.getInt("student_id"));
+            subDTO.setAssignmentId(rs.getInt("assignment_id"));
             subDTO.setStuName(rs.getString("student_name"));
             subDTO.setAssignTitle(rs.getString("assignment_title"));
             subDTO.setSubDate(rs.getDate("submission_date"));
@@ -58,22 +59,36 @@ public class AssignmentDao {
     }
 
     //学生查看作业
-    public List<AssignmentDTO> queryWork(int studentId) throws SQLException {
-        PreparedStatement psm = connection.prepareStatement("select ass.assignment_title, ass.assignment_description, " +
+    public List<Assignment> queryWork(int studentId) throws SQLException {
+        PreparedStatement psm = connection.prepareStatement("select ass.assignment_id,ass.assignment_title, ass.assignment_description, " +
                 "ass.assignment_deadline, ass.assignment_subject " +
                 "from assignments ass JOIN students stu on" +
                 " ass.assignment_class = stu.student_class where stu.student_id = ?");
         psm.setInt(1,studentId);
         ResultSet rs = psm.executeQuery();
-        List<AssignmentDTO> assignmentDTOS = new ArrayList<AssignmentDTO>();
-        if (rs.next()) {
-            AssignmentDTO assignmentDTO = new AssignmentDTO();
-            assignmentDTO.setAssignmentTitle(rs.getString("assignmentTitle"));
-            assignmentDTO.setAssignmentDescription(rs.getString("assignmentDescription"));
-            assignmentDTO.setAssignmentDeadLine(rs.getDate("assignmentDeadline"));
-            assignmentDTO.setAssignmentSubject(rs.getString("assignmentSubject"));
+        List<Assignment> assignmentDTOS = new ArrayList<Assignment>();
+        while (rs.next()) {
+            Assignment assignmentDTO = new Assignment();
+            assignmentDTO.setAssignmentId(rs.getInt("assignment_id"));
+            assignmentDTO.setAssignmentTitle(rs.getString("assignment_title"));
+            assignmentDTO.setAssignmentDescription(rs.getString("assignment_description"));
+            assignmentDTO.setAssignmentDeadLine(rs.getDate("assignment_deadline"));
+            assignmentDTO.setAssignmentSubject(rs.getString("assignment_subject"));
             assignmentDTOS.add(assignmentDTO);
         }
         return assignmentDTOS;
+    }
+
+    //老师修改截至时间
+    public void modify(Assignment assignment) throws SQLException {
+
+        java.sql.Date deadLineDate = new java.sql.Date(assignment.getAssignmentDeadLine().getTime());
+        PreparedStatement preparedStatement = connection
+                .prepareStatement("update assignments set assignment_deadline =? where assignment_id =?");
+
+        preparedStatement.setDate(1, deadLineDate);
+        preparedStatement.setInt(2,assignment.getAssignmentId());
+
+        preparedStatement.executeUpdate();
     }
 }

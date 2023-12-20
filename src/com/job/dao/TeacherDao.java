@@ -83,7 +83,7 @@ public class TeacherDao {
     }
 
     public Teacher login(String teacherNumber, String teacherPassword) throws SQLException {
-        Teacher teacher = new Teacher();
+        Teacher teacher = null;
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from teachers where teacher_number=? and teacher_password=?");
         preparedStatement.setString(1, teacherNumber);
@@ -91,6 +91,7 @@ public class TeacherDao {
         ResultSet rs = preparedStatement.executeQuery();
 
         if (rs.next()) {
+            teacher = new Teacher();
             teacher.setTeacherId(rs.getInt("teacher_id"));
             teacher.setTeacherNumber(rs.getString("teacher_number"));
             teacher.setTeacherName(rs.getString("teacher_name"));
@@ -102,6 +103,7 @@ public class TeacherDao {
 
     public Teacher verify(int teacherId, String teacherNumber) throws SQLException {
         Teacher teacher = new Teacher();
+        teacher.setTeacherId(0);
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from teachers where teacher_id=? and teacher_number=?");
         preparedStatement.setInt(1, teacherId);

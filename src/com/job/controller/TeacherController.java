@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -43,21 +44,14 @@ public class TeacherController extends BaseController {
         引入接口使用的ORM操作对象
      */
     private final TeacherDao teacherDao;
-    private final AssignmentDao assignmentDao;
-    private final SubmissionDao submissionDao;
 
 
     public TeacherController() {
         super();
         this.teacherDao = new TeacherDao();
-        this.assignmentDao = new AssignmentDao();
-        this.submissionDao = new SubmissionDao();
         this.urlMethodMap.put("queryTeacherById", "GET");
         this.urlMethodMap.put("login", "GET");
         this.urlMethodMap.put("register", "POST");
-        this.urlMethodMap.put("publishJob", "POST");
-        this.urlMethodMap.put("querySubDTO", "GET");
-        this.urlMethodMap.put("mark", "POST");
         super.urlMethodMap = urlMethodMap;
     }
 
@@ -120,44 +114,7 @@ public class TeacherController extends BaseController {
         responseData.writeResponseData(resp, "新增成功");
     }
 
-    //发布作业
-    public void publishJob(HttpServletRequest req, HttpServletResponse resp) throws ParseException, SQLException {
-        Assignment assignment = new Assignment();
-        //yyyy-MM-dd HH:mm:ss
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        assignment.setAssignmentTitle(req.getParameter("assignmentTitle"));
-        assignment.setAssignmentDescription(req.getParameter("assignmentDescription"));
-        assignment.setAssignmentDeadLine(dateFormat.parse(req.getParameter("assignmentDeadLine")));
-        assignment.setAssignmentSubject(req.getParameter("assignmentSubject"));
-        assignment.setAssignmentClass(req.getParameter("assignmentClass"));
-        String[] userInfo = Common.getUserInfoFromCookies(req);
-        assert userInfo != null;
-        assignment.setTeaId(Integer.parseInt(userInfo[1]));
-        assignmentDao.publish(assignment);
-    }
 
-    //老师查看作业
-    public void querySubDTO(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
-        //拿到老师Id
-        String[] userInfo = Common.getUserInfoFromCookies(req);
-        assert userInfo != null;
-        int teacherId = Integer.parseInt(userInfo[1]);
-        //调用DAO层拿结果
-        List<subDTO> subDTOS = assignmentDao.querySubDTO(teacherId);
-        //输出到浏览器
-        ResponseData responseData = new ResponseData();
-        responseData.writeResponseData(resp,subDTOS.toString());
-    }
 
-    //老师批改提交(评分)
-    public void mark(HttpServletRequest req, HttpServletResponse resp) throws SQLException, IOException {
-        //1、接收浏览器传来的submissionId和score
-        int submissionId = Integer.parseInt(req.getParameter("submissionId"));
-        int score = Integer.parseInt(req.getParameter("score"));
-        //2、调用DAO层
-        submissionDao.mark(submissionId, score);
-        //3、将修改结果返回浏览器
-        ResponseData responseData = new ResponseData();
-        responseData.writeResponseData(resp, "批改成功");
-    }
+
 }

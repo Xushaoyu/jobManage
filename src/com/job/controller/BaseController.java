@@ -1,4 +1,4 @@
-package com.job.util;
+package com.job.controller;
 
 
 import com.job.auth.Authority;
@@ -15,6 +15,7 @@ import java.util.Objects;
 public class BaseController extends HttpServlet {
 
     private final Authority authority;
+    public final String nginxUrl = "http://localhost:8080/jobManage/";
 
     /*
         子类重写父类方法，参考https://blog.51cto.com/u_5650011/5386958
