@@ -61,6 +61,7 @@ public class AssignmentController  extends BaseController{
         this.urlMethodMap.put("modify", "POST");
         this.urlMethodMap.put("queryWorkByCourseStuId", "GET");
         this.urlMethodMap.put("queryStatus", "GET");
+        this.urlMethodMap.put("querySubWorkByCourseTeaId", "GET");
         super.urlMethodMap = urlMethodMap;
     }
 
@@ -196,6 +197,21 @@ public class AssignmentController  extends BaseController{
         try {
             int status = assignmentDao.queryStatus(assignmentId);
             responseData.writeResponseData(resp, String.valueOf(status) ,true);
+        }catch (Exception e){
+            responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
+            return;
+        }
+    }
+
+    //通过课程id和老师id查看提交的作业
+    public void querySubWorkByCourseTeaId(HttpServletRequest req, HttpServletResponse resp) throws ParseException, IOException {
+        int courseId = Integer.parseInt(req.getParameter("courseId"));
+        String[] userInfo = Common.getUserInfoFromCookies(req);
+        ResponseData responseData = new ResponseData();
+        int teacherId = Integer.parseInt(userInfo[1]);
+        try {
+            List<subDTO> subDTOS = assignmentDao.querySubWorkByCourseTeaId(courseId, teacherId);
+            responseData.writeResponseData(resp, subDTOS.toString(),true);
         }catch (Exception e){
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
             return;

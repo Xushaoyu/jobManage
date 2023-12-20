@@ -12,12 +12,12 @@ public class Course {
     @Override
     public String toString() {
         return "{" +
-                //"courseId=" + courseId +
+                "courseId=" + courseId + '\'' +
                 "courseName='" + courseName + '\'' +
                 ", courseImgUrl='" + courseImgUrl + '\'' +
-                //", asIsDelete='" + asIsDelete + '\'' +
-                //", upDateTime=" + upDateTime +
-                //", createTime=" + createTime +
+//                ", asIsDelete='" + asIsDelete + '\'' +
+                ", upDateTime=" + upDateTime +
+                ", createTime=" + createTime +
                 '}';
     }
 
