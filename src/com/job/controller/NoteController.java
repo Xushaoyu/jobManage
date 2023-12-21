@@ -1,5 +1,6 @@
 package com.job.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.job.dao.CourseDao;
 import com.job.dao.NoteDao;
 import com.job.model.Course;
@@ -56,9 +57,9 @@ public class NoteController  extends BaseController{
         assert userInfo != null;
         int studentId = Integer.parseInt(userInfo[1]);
         //调用DAO层拿结果
-        List<Note> notes = noteDao.queryNote(studentId);
+        JSONArray notes = noteDao.queryNote(studentId);
         //输出到浏览器
         ResponseData responseData = new ResponseData();
-        responseData.writeResponseData(resp, notes.toString(),true);
+        responseData.writeResponseData(resp, notes);
     }
 }

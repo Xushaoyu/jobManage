@@ -1,5 +1,6 @@
 package com.job.dao;
 
+import com.alibaba.fastjson.JSONArray;
 import com.job.model.Course;
 import com.job.model.Note;
 import com.job.util.DBUtil;
@@ -17,11 +18,11 @@ public class NoteDao {
     public NoteDao() {
         connection = DBUtil.getConnection();
     }
-    public List<Note> queryNote(int studentId) throws SQLException {
+    public JSONArray queryNote(int studentId) throws SQLException {
         PreparedStatement psm = connection.prepareStatement("select * from note where student_id = ?");
         psm.setInt(1, studentId);
         ResultSet rs = psm.executeQuery();
-        List<Note> notes = new ArrayList<Note>();
+        JSONArray notes = new JSONArray();
         while (rs.next()) {
             Note note = new Note();
             note.setNoteId(rs.getInt("note_id"));

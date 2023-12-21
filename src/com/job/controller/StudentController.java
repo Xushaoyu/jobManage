@@ -80,7 +80,7 @@ public class StudentController extends BaseController {
                 cookie.setMaxAge(60 * 60 * 24);
                 cookie.setPath("/"); // 设置Cookie的路径为根路径
                 resp.addCookie(cookie);
-                responseData.writeResponseData(resp, student.toString());
+                responseData.writeResponseData(resp, student);
             }
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
