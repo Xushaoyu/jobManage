@@ -14,10 +14,6 @@ public class ResponseData {
                               '}';
         resp.setCharacterEncoding("utf-8");
         resp.setContentType("application/json; charset=utf-8");
-        resp.addHeader("Access-Control-Allow-Origin", "*");
-        resp.addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
-        resp.addHeader("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
-        resp.addHeader("Access-Control-Max-Age", "1728000");
         PrintWriter writer = resp.getWriter();
         writer.print(ResponseData);
         writer.flush();
@@ -33,10 +29,6 @@ public class ResponseData {
                     '}';
             resp.setCharacterEncoding("utf-8");
             resp.setContentType("application/json; charset=utf-8");
-            resp.addHeader("Access-Control-Allow-Origin", "*");
-            resp.addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
-            resp.addHeader("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
-            resp.addHeader("Access-Control-Max-Age", "1728000");
             PrintWriter writer = resp.getWriter();
             writer.print(ResponseData);
             writer.flush();
@@ -53,10 +45,6 @@ public class ResponseData {
                     '}';
             resp.setCharacterEncoding("utf-8");
             resp.setContentType("application/json; charset=utf-8");
-            resp.addHeader("Access-Control-Allow-Origin", "*");
-            resp.addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
-            resp.addHeader("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
-            resp.addHeader("Access-Control-Max-Age", "1728000");
             PrintWriter writer = resp.getWriter();
             writer.print(ResponseData);
             writer.flush();
@@ -72,10 +60,6 @@ public class ResponseData {
                               '}';
         resp.setCharacterEncoding("utf-8");
         resp.setContentType("application/json; charset=utf-8");
-        resp.addHeader("Access-Control-Allow-Origin", "*");
-        resp.addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
-        resp.addHeader("Access-Control-Allow-Headers", "X-PINGOTHER, Origin, X-Requested-With, Content-Type, Accept");
-        resp.addHeader("Access-Control-Max-Age", "1728000");
         PrintWriter writer = resp.getWriter();
         writer.print(ResponseData);
         writer.flush();
