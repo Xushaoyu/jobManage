@@ -1,6 +1,7 @@
 package com.job.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.job.dao.AssignmentDao;
 
 import com.job.dao.SubmissionDao;
@@ -24,7 +25,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 @WebServlet("/assignment/*")
 @MultipartConfig
@@ -74,10 +74,10 @@ public class AssignmentController  extends BaseController{
         assert userInfo != null;
         int studentId = Integer.parseInt(userInfo[1]);
         //调用DAO层拿结果
-        List<Assignment> assignments = assignmentDao.queryWork(studentId);
+        JSONArray assignments = assignmentDao.queryWork(studentId);
         //输出到浏览器
         ResponseData responseData = new ResponseData();
-        responseData.writeResponseData(resp,assignments.toString(),true);
+        responseData.writeResponseData(resp, assignments);
     }
 
     /*****学生提交作业*****/
@@ -142,10 +142,10 @@ public class AssignmentController  extends BaseController{
         assert userInfo != null;
         int teacherId = Integer.parseInt(userInfo[1]);
         //调用DAO层拿结果
-        List<subDTO> subDTOS = assignmentDao.querySubDTO(teacherId);
+        JSONArray subDTOS = assignmentDao.querySubDTO(teacherId);
         //输出到浏览器
         ResponseData responseData = new ResponseData();
-        responseData.writeResponseData(resp,subDTOS.toString());
+        responseData.writeResponseData(resp,subDTOS);
     }
 
     //老师批改提交(评分)
@@ -190,25 +190,25 @@ public class AssignmentController  extends BaseController{
         int courseId = Integer.parseInt(req.getParameter("courseId"));
         String[] userInfo = Common.getUserInfoFromCookies(req);
         ResponseData responseData = new ResponseData();
+        assert userInfo != null;
         int studentId = Integer.parseInt(userInfo[1]);
         try {
-            List<Assignment> assignments = assignmentDao.queryWorkByCourseStuId(courseId, studentId);
-            responseData.writeResponseData(resp, assignments.toString(),true);
+            JSONArray assignments = assignmentDao.queryWorkByCourseStuId(courseId, studentId);
+            responseData.writeResponseData(resp, assignments);
         }catch (Exception e){
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
-            return;
         }
     }
 
     public void queryStatus(HttpServletRequest req, HttpServletResponse resp) throws ParseException, IOException {
+        String[] STATUS = {"未完成", "已提交", "已完成"};
         int assignmentId = Integer.parseInt(req.getParameter("assignmentId"));
         ResponseData responseData = new ResponseData();
         try {
             int status = assignmentDao.queryStatus(assignmentId);
-            responseData.writeResponseData(resp, String.valueOf(status) ,true);
+            responseData.writeResponseData(resp, STATUS[status]);
         }catch (Exception e){
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
-            return;
         }
     }
 
@@ -217,13 +217,13 @@ public class AssignmentController  extends BaseController{
         int courseId = Integer.parseInt(req.getParameter("courseId"));
         String[] userInfo = Common.getUserInfoFromCookies(req);
         ResponseData responseData = new ResponseData();
+        assert userInfo != null;
         int teacherId = Integer.parseInt(userInfo[1]);
         try {
-            List<subDTO> subDTOS = assignmentDao.querySubWorkByCourseTeaId(courseId, teacherId);
-            responseData.writeResponseData(resp, subDTOS.toString(),true);
+            JSONArray subDTOS = assignmentDao.querySubWorkByCourseTeaId(courseId, teacherId);
+            responseData.writeResponseData(resp, subDTOS);
         }catch (Exception e){
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
-            return;
         }
     }
 }

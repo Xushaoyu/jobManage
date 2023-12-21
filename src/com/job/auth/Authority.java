@@ -1,5 +1,6 @@
 package com.job.auth;
 
+import com.alibaba.fastjson.JSONObject;
 import com.job.dao.StudentDao;
 import com.job.dao.TeacherDao;
 import com.job.model.Student;
@@ -56,16 +57,14 @@ public class Authority {
                 if (!student_power.contains(url)){
                     return false;
                 }
-                Student student;
-                student = studentDao.verify(Integer.parseInt(id), number);
+                JSONObject student = studentDao.verify(Integer.parseInt(id), number);
                 return student != null;
             } else if (Objects.equals(role, "teacher")){
                 List<String> teacher_power = Arrays.asList(prop.getProperty("teacher_power").split(", "));
                 if (!teacher_power.contains(url)){
                     return false;
                 }
-                Teacher teacher;
-                teacher = teacherDao.verify(Integer.parseInt(id), number);
+                JSONObject teacher = teacherDao.verify(Integer.parseInt(id), number);
                 return teacher != null;
             }
         } catch (Exception e) {

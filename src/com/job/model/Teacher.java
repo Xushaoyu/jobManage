@@ -1,6 +1,10 @@
 package com.job.model;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Teacher {
     private int teacherId;
@@ -10,6 +14,7 @@ public class Teacher {
     private int teacherAssignmentId;
     private Date updateTime;
     private Date createTime;
+    private String picture;
 
     public int getTeacherId() {
         return teacherId;
@@ -67,9 +72,18 @@ public class Teacher {
         this.createTime = createTime;
     }
 
+    public String getPicture() {
+        return picture;
+    }
+
+    public Teacher setPicture(String picture) {
+        this.picture = picture;
+        return this;
+    }
+
     @Override
     public String toString() {
-        return "Teacher{" +
+        return "{" +
                 "teacherId=" + teacherId +
                 ", teacherNumber=" + teacherNumber +
                 ", teacherPassword='" + teacherPassword + '\'' +
@@ -79,4 +93,13 @@ public class Teacher {
                 ", createTime=" + createTime +
                 '}';
     }
+
+    public JSONObject getResult() {
+        JSONObject result = new JSONObject();
+        result.put("teacherId", teacherId);
+        result.put("teacherNumber", teacherNumber);
+        result.put("teacherName", teacherName);
+        return result;
+    }
+
 }

@@ -1,11 +1,11 @@
 package com.job.dao;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.job.model.Teacher;
 import com.job.util.DBUtil;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TeacherDao {
     private final Connection connection;
@@ -49,8 +49,8 @@ public class TeacherDao {
         preparedStatement.executeUpdate();
     }
 
-    public List<Teacher> getAllTeachers() throws SQLException {
-        List<Teacher> teachers = new ArrayList<Teacher>();
+    public JSONArray getAllTeachers() throws SQLException {
+        JSONArray teachers = new JSONArray();
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery("select * from teachers");
         while (rs.next()) {
@@ -60,62 +60,64 @@ public class TeacherDao {
             teacher.setTeacherName(rs.getString("teacher_name"));
             teacher.setUpdateTime(rs.getDate("update_time"));
             teacher.setCreateTime(rs.getDate("create_time"));
+//            JSONObject teacher = new JSONObject();
+//            teacher.put("teacher_id", rs.getInt("teacher_id"));
+//            teacher.put("teacher_number", rs.getString("teacher_number"));
+//            teacher.put("teacher_name", rs.getString("teacher_name"));
+//            teacher.put("update_time", rs.getDate("update_time"));
+//            teacher.put("create_time", rs.getDate("create_time"));
             teachers.add(teacher);
         }
         return teachers;
     }
 
-    public Teacher getTeacherById(int TeacherId) throws SQLException {
-        Teacher teacher = new Teacher();
+    public JSONObject getTeacherById(int TeacherId) throws SQLException {
+        JSONObject teacher = new JSONObject();
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from teachers where teacher_id=?");
         preparedStatement.setInt(1, TeacherId);
         ResultSet rs = preparedStatement.executeQuery();
 
-        while (rs.next()) {
-            teacher.setTeacherId(rs.getInt("teacher_id"));
-            teacher.setTeacherNumber(rs.getString("teacher_number"));
-            teacher.setTeacherName(rs.getString("teacher_name"));
-            teacher.setUpdateTime(rs.getDate("update_time"));
-            teacher.setCreateTime(rs.getDate("create_time"));
+        if (rs.next()) {
+            teacher.put("teacher_id", rs.getInt("teacher_id"));
+            teacher.put("teacher_number", rs.getString("teacher_number"));
+            teacher.put("update_time", rs.getDate("update_time"));
+            teacher.put("create_time", rs.getDate("create_time"));
         }
         return teacher;
     }
 
-    public Teacher login(String teacherNumber, String teacherPassword) throws SQLException {
-        Teacher teacher = null;
+    public JSONObject login(String teacherNumber, String teacherPassword) throws SQLException {
+        JSONObject teacher = new JSONObject();
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from teachers where teacher_number=? and teacher_password=?");
         preparedStatement.setString(1, teacherNumber);
         preparedStatement.setString(2, teacherPassword);
         ResultSet rs = preparedStatement.executeQuery();
 
-        while (rs.next()) {
-            teacher = new Teacher();
-            teacher.setTeacherId(rs.getInt("teacher_id"));
-            teacher.setTeacherNumber(rs.getString("teacher_number"));
-            teacher.setTeacherName(rs.getString("teacher_name"));
-            teacher.setUpdateTime(rs.getDate("update_time"));
-            teacher.setCreateTime(rs.getDate("create_time"));
+        if (rs.next()) {
+            teacher.put("teacher_id", rs.getInt("teacher_id"));
+            teacher.put("teacher_number", rs.getString("teacher_number"));
+            teacher.put("teacher_name", rs.getString("teacher_name"));
+            teacher.put("update_time", rs.getDate("update_time"));
+            teacher.put("create_time", rs.getDate("create_time"));
+            teacher.put("picture", rs.getString("picture"));
         }
         return teacher;
     }
 
-    public Teacher verify(int teacherId, String teacherNumber) throws SQLException {
-        Teacher teacher = new Teacher();
-        teacher.setTeacherId(0);
+    public JSONObject verify(int teacherId, String teacherNumber) throws SQLException {
+        JSONObject teacher = new JSONObject();
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from teachers where teacher_id=? and teacher_number=?");
         preparedStatement.setInt(1, teacherId);
         preparedStatement.setString(2, teacherNumber);
         ResultSet rs = preparedStatement.executeQuery();
 
-        while (rs.next()) {
-            teacher.setTeacherNumber(rs.getString("teacher_number"));
-            teacher.setTeacherId(rs.getInt("teacher_id"));
-            teacher.setTeacherName(rs.getString("teacher_name"));
-            teacher.setUpdateTime(rs.getDate("update_time"));
-            teacher.setCreateTime(rs.getDate("create_time"));
+        if (rs.next()) {
+            teacher.put("teacher_id", rs.getInt("teacher_id"));
+            teacher.put("teacher_number", rs.getString("teacher_number"));
+            teacher.put("teacher_name", rs.getString("teacher_name"));
         }
         return teacher;
     }

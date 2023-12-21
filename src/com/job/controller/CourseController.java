@@ -1,9 +1,7 @@
 package com.job.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.job.dao.CourseDao;
-import com.job.dao.StudentDao;
-import com.job.model.Course;
-import com.job.model.Student;
 import com.job.util.Common;
 import com.job.util.FileProcessor;
 import com.job.util.ResponseData;
@@ -17,7 +15,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 
 @WebServlet("/course/*")
 public class CourseController extends BaseController{
@@ -40,13 +37,11 @@ public class CourseController extends BaseController{
         引入接口使用的ORM操作对象
      */
     private final CourseDao courseDao;
-    private final StudentDao studentDao;
 
 
     public CourseController() {
         super();
         this.courseDao = new CourseDao();
-        this.studentDao = new StudentDao();
         this.urlMethodMap.put("queryCourse", "GET");
         this.urlMethodMap.put("addCourse", "POST");
         super.urlMethodMap = urlMethodMap;
@@ -60,18 +55,17 @@ public class CourseController extends BaseController{
         if (userInfo[2].equals("student")){
             int studentId = Integer.parseInt(userInfo[1]);
             //调用DAO层拿结果
-            List<Course> courses = courseDao.queryStuCourse(studentId);
-            Student studentById = studentDao.getStudentById(Integer.parseInt(userInfo[1]));
+            JSONArray courses = courseDao.queryStuCourse(studentId);
             //输出到浏览器
             ResponseData responseData = new ResponseData();
-            responseData.writeResponseData(resp,courses.toString()+studentById.getStudentName(),true);
+            responseData.writeResponseData(resp,courses);
         } else if (userInfo[2].equals("teacher")) {
             int teacherId = Integer.parseInt(userInfo[1]);
             //调用DAO层拿结果
-            List<Course> courses = courseDao.queryTeaCourse(teacherId);
+            JSONArray courses = courseDao.queryTeaCourse(teacherId);
             //输出到浏览器
             ResponseData responseData = new ResponseData();
-            responseData.writeResponseData(resp,courses.toString());
+            responseData.writeResponseData(resp,courses);
         }
     }
 
