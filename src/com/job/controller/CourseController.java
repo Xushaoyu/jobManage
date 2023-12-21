@@ -1,7 +1,7 @@
 package com.job.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.job.dao.CourseDao;
-import com.job.model.Course;
 import com.job.util.Common;
 import com.job.util.ResponseData;
 
@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 
 @WebServlet("/course/*")
 public class CourseController extends BaseController{
@@ -51,17 +50,17 @@ public class CourseController extends BaseController{
         if (userInfo[2].equals("student")){
             int studentId = Integer.parseInt(userInfo[1]);
             //调用DAO层拿结果
-            List<Course> courses = courseDao.queryStuCourse(studentId);
+            JSONArray courses = courseDao.queryStuCourse(studentId);
             //输出到浏览器
             ResponseData responseData = new ResponseData();
-            responseData.writeResponseData(resp,courses.toString(),true);
+            responseData.writeResponseData(resp,courses);
         } else if (userInfo[2].equals("teacher")) {
             int teacherId = Integer.parseInt(userInfo[1]);
             //调用DAO层拿结果
-            List<Course> courses = courseDao.queryTeaCourse(teacherId);
+            JSONArray courses = courseDao.queryTeaCourse(teacherId);
             //输出到浏览器
             ResponseData responseData = new ResponseData();
-            responseData.writeResponseData(resp,courses.toString());
+            responseData.writeResponseData(resp,courses);
         }
     }
 }

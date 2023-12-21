@@ -2,12 +2,8 @@ package com.job.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.job.dao.AssignmentDao;
-import com.job.dao.SubmissionDao;
 import com.job.dao.TeacherDao;
-import com.job.model.Assignment;
 import com.job.model.Teacher;
-import com.job.model.subDTO;
 import com.job.util.*;
 
 import javax.servlet.annotation.WebServlet;
@@ -15,14 +11,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 @WebServlet("/teacher/*")
 public class TeacherController extends BaseController {
@@ -63,7 +53,7 @@ public class TeacherController extends BaseController {
             JSONObject teacher = teacherDao.getTeacherById(Integer.parseInt(req.getParameter("teacherId")));
             responseData.writeResponseData(resp, teacher);
         } catch (SQLException e) {
-            responseData.writeResponseData(resp, 400, "false", e.getMessage());
+            responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
         }
     }
 
@@ -74,7 +64,7 @@ public class TeacherController extends BaseController {
         try {
             String password = md5.encode(req.getParameter("teacherPassword"));
             JSONObject teacher = teacherDao.login(req.getParameter("teacherNumber"), password);
-            if (teacher == null) {
+            if (teacher.isEmpty()) {
                 responseData.writeResponseData(resp, "false", "username or password is invalid");
             } else {
                 String teacherInfo= teacher.getString("teacher_number") + "==" + teacher.getInteger("teacher_id") + "==teacher";

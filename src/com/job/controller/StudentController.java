@@ -53,7 +53,7 @@ public class StudentController extends BaseController {
         ResponseData responseData = new ResponseData();
         try {
             JSONObject student = studentDao.getStudentById(Integer.parseInt(req.getParameter("studentId")));
-            if (student == null){
+            if (student.isEmpty()){
                 responseData.writeResponseData(resp, 400, "student not found", null);
             } else {
                 responseData.writeResponseData(resp, student);
@@ -72,7 +72,7 @@ public class StudentController extends BaseController {
         try {
             String password = md5.encode(req.getParameter("password"));
             JSONObject student = studentDao.login(req.getParameter("studentNumber"), password);
-            if (student == null) {
+            if (student.isEmpty()) {
                 responseData.writeResponseData(resp, "username or password is invalid");
             } else {
                 String studentInfo = student.getString("student_number") + "==" + student.getInteger("student_id") + "==student";

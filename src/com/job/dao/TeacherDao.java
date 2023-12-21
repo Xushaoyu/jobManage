@@ -6,8 +6,6 @@ import com.job.model.Teacher;
 import com.job.util.DBUtil;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TeacherDao {
     private final Connection connection;
@@ -56,12 +54,18 @@ public class TeacherDao {
         Statement statement = connection.createStatement();
         ResultSet rs = statement.executeQuery("select * from teachers");
         while (rs.next()) {
-            JSONObject teacher = new JSONObject();
-            teacher.put("teacher_id", rs.getInt("teacher_id"));
-            teacher.put("teacher_number", rs.getString("teacher_number"));
-            teacher.put("teacher_name", rs.getString("teacher_name"));
-            teacher.put("update_time", rs.getDate("update_time"));
-            teacher.put("create_time", rs.getDate("create_time"));
+            Teacher teacher = new Teacher();
+            teacher.setTeacherId(rs.getInt("teacher_id"));
+            teacher.setTeacherNumber(rs.getString("teacher_number"));
+            teacher.setTeacherName(rs.getString("teacher_name"));
+            teacher.setUpdateTime(rs.getDate("update_time"));
+            teacher.setCreateTime(rs.getDate("create_time"));
+//            JSONObject teacher = new JSONObject();
+//            teacher.put("teacher_id", rs.getInt("teacher_id"));
+//            teacher.put("teacher_number", rs.getString("teacher_number"));
+//            teacher.put("teacher_name", rs.getString("teacher_name"));
+//            teacher.put("update_time", rs.getDate("update_time"));
+//            teacher.put("create_time", rs.getDate("create_time"));
             teachers.add(teacher);
         }
         return teachers;
