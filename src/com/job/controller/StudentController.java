@@ -77,6 +77,7 @@ public class StudentController extends BaseController {
                 String studentInfo = student.getStudentNumber() + "==" + student.getStudentId() + "==student";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(studentInfo));
                 cookie.setMaxAge(60 * 60 * 24);
+                cookie.setPath("/"); // 设置Cookie的路径为根路径
                 resp.addCookie(cookie);
                 responseData.writeResponseData(resp, "登录成功");
             }

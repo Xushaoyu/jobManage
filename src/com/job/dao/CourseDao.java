@@ -1,14 +1,9 @@
 package com.job.dao;
 
-import com.job.model.Assignment;
 import com.job.model.Course;
-import com.job.model.subDTO;
 import com.job.util.DBUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,5 +41,16 @@ public class CourseDao {
             courses.add(course);
         }
         return courses;
+    }
+
+    public int addCourse(String courseName, String fileUrl) throws SQLException {
+        PreparedStatement psm = connection.prepareStatement("insert into course (course_name,course_img_url,update_time,create_time) values (?,?,?,?)");
+        Date date = new java.sql.Date(System.currentTimeMillis());
+        psm.setString(1, courseName);
+        psm.setString(2, fileUrl);
+        psm.setDate(3, date);
+        psm.setDate(4, date);
+        int count = psm.executeUpdate();
+        return count;
     }
 }

@@ -3,11 +3,15 @@ package com.job.controller;
 import com.job.dao.CourseDao;
 import com.job.model.Course;
 import com.job.util.Common;
+import com.job.util.FileProcessor;
 import com.job.util.ResponseData;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -40,6 +44,7 @@ public class CourseController extends BaseController{
         super();
         this.courseDao = new CourseDao();
         this.urlMethodMap.put("queryCourse", "GET");
+        this.urlMethodMap.put("addCourse", "POST");
         super.urlMethodMap = urlMethodMap;
     }
 
@@ -63,5 +68,36 @@ public class CourseController extends BaseController{
             ResponseData responseData = new ResponseData();
             responseData.writeResponseData(resp,courses.toString());
         }
+    }
+
+    //老师添加课程
+    public void addCourse(HttpServletRequest req, HttpServletResponse resp) throws IOException, SQLException, ServletException {
+        //拿到id
+        String[] userInfo = Common.getUserInfoFromCookies(req);
+        assert userInfo != null;
+        int teacherId = Integer.parseInt(userInfo[1]);
+        ResponseData responseData = new ResponseData();
+        //获取课程名称
+        String courseName = req.getParameter("courseName");
+
+
+        // 获取上传文件文件的输入流
+        String pathDir = "assignment";
+        Part filePart = req.getPart("file");
+        String staticFilePath = new File(getServletContext().getRealPath("")).getParentFile().getParentFile().getParentFile()+ File.separator + "statics";
+        String uploadDirectory = staticFilePath +  File.separator + pathDir;
+        FileProcessor fileProcessor = new FileProcessor(uploadDirectory);
+        // 在需要的地方调用 FileProcessor 的方法
+        String fileName = fileProcessor.processFile(filePart);
+        if (fileName.equals("")) {
+            responseData.writeResponseData(resp, 400, "文件流处理失败", "upload fail");
+        }
+        String fileUrl = this.nginxUrl + pathDir + "/" + fileName;
+
+
+        //调用DAO层拿结果
+        int count = courseDao.addCourse(courseName, fileUrl);
+        //输出到浏览器
+        responseData.writeResponseData(resp, String.valueOf(count));
     }
 }
