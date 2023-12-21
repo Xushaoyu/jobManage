@@ -21,28 +21,35 @@ public class CourseDao {
 
 
     public JSONArray queryStuCourse(int studentId) throws SQLException {
-        PreparedStatement psm = connection.prepareStatement("select co.course_name,co.course_img_url from course co join stu_course sc on co.course_id=sc.student_id where sc.student_id = ?");
+        PreparedStatement psm = connection.prepareStatement("select co.* from course co join stu_course sc on co.course_id=sc.course_id where sc.student_id = ?");
         psm.setInt(1, studentId);
         ResultSet rs = psm.executeQuery();
         JSONArray courses = new JSONArray();
         while (rs.next()) {
             Course course = new Course();
+            course.setCourseId(rs.getInt("course_id"));
             course.setCourseName(rs.getString("course_name"));
             course.setCourseImgUrl(rs.getString("course_img_url"));
+            course.setUpDateTime(rs.getDate("update_time"));
+            course.setCreateTime(rs.getDate("create_time"));
+            course.setTeacher(rs.getString("teacher"));
             courses.add(course);
         }
         return courses;
     }
 
     public JSONArray queryTeaCourse(int teacherId) throws SQLException {
-        PreparedStatement psm = connection.prepareStatement("select co.course_name,co.course_img_url from course co join tea_course tc on co.course_id=tc.teacher_id where tc.teacher_id = ?");
+        PreparedStatement psm = connection.prepareStatement("select co.* from course co join tea_course tc on co.course_id=tc.course_id where tc.teacher_id = ?");
         psm.setInt(1, teacherId);
         ResultSet rs = psm.executeQuery();
         JSONArray courses = new JSONArray();
         while (rs.next()) {
             Course course = new Course();
+            course.setCourseId(rs.getInt("course_id"));
             course.setCourseName(rs.getString("course_name"));
             course.setCourseImgUrl(rs.getString("course_img_url"));
+            course.setUpDateTime(rs.getDate("update_time"));
+            course.setCreateTime(rs.getDate("create_time"));
             courses.add(course);
         }
         return courses;

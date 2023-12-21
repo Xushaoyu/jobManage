@@ -10,6 +10,8 @@ public class Assignment {
     private String assignmentSubject;
     private String assignmentClass;
     private int teaId;
+
+    private int courseID;
     private Date updateTime;
     private Date createTime;
 
@@ -23,6 +25,7 @@ public class Assignment {
                 ", assignmentSubject='" + assignmentSubject + '\'' +
                 ", assignmentClass='" + assignmentClass + '\'' +
                 ", teaId=" + teaId +
+                ", courseID=" + courseID +
                 ", updateTime=" + updateTime +
                 ", createTime=" + createTime +
                 '}';
@@ -82,6 +85,14 @@ public class Assignment {
 
     public void setTeaId(int teaId) {
         this.teaId = teaId;
+    }
+
+    public int getCourseID() {
+        return courseID;
+    }
+
+    public void setCourseID(int courseID) {
+        this.courseID = courseID;
     }
 
     public Date getUpdateTime() {

@@ -1,19 +1,15 @@
 package com.job.controller;
 
-import com.job.dao.CourseDao;
+import com.alibaba.fastjson.JSONArray;
 import com.job.dao.NoteDao;
-import com.job.model.Course;
 import com.job.model.Note;
 import com.job.util.Common;
-import com.job.util.FileProcessor;
 import com.job.util.ResponseData;
 
-import javax.servlet.ServletException;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -56,9 +52,9 @@ public class NoteController  extends BaseController{
         assert userInfo != null;
         int studentId = Integer.parseInt(userInfo[1]);
         //调用DAO层拿结果
-        List<Note> notes = noteDao.queryNote(studentId);
+        JSONArray notes = noteDao.queryNote(studentId);
         //输出到浏览器
         ResponseData responseData = new ResponseData();
-        responseData.writeResponseData(resp, notes.toString(),true);
+        responseData.writeResponseData(resp, notes);
     }
 }

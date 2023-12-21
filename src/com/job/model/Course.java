@@ -8,29 +8,19 @@ public class Course {
     String asIsDelete;
     Date  upDateTime;
     Date createTime;
+    String teacher;
 
     @Override
     public String toString() {
-        return "{" +
+        return "Course{" +
                 "courseId=" + courseId +
-                ",courseName='" + courseName + '\'' +
+                ", courseName='" + courseName + '\'' +
                 ", courseImgUrl='" + courseImgUrl + '\'' +
-//                ", asIsDelete='" + asIsDelete + '\'' +
+                ", asIsDelete='" + asIsDelete + '\'' +
                 ", upDateTime=" + upDateTime +
                 ", createTime=" + createTime +
+                ", teacher='" + teacher + '\'' +
                 '}';
-    }
-
-    public Course() {
-    }
-
-    public Course(int courseId, String courseName, String courseImgUrl, String asIsDelete, Date upDateTime, Date createTime) {
-        this.courseId = courseId;
-        this.courseName = courseName;
-        this.courseImgUrl = courseImgUrl;
-        this.asIsDelete = asIsDelete;
-        this.upDateTime = upDateTime;
-        this.createTime = createTime;
     }
 
     public int getCourseId() {
@@ -79,5 +69,13 @@ public class Course {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
     }
 }
