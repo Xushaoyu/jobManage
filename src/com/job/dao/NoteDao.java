@@ -22,7 +22,7 @@ public class NoteDao {
         psm.setInt(1, studentId);
         ResultSet rs = psm.executeQuery();
         List<Note> notes = new ArrayList<Note>();
-        if (rs.next()) {
+        while (rs.next()) {
             Note note = new Note();
             note.setNoteId(rs.getInt("note_id"));
             note.setStudentId(rs.getInt("student_id"));

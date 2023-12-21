@@ -76,7 +76,7 @@ public class StudentDao {
         preparedStatement.setInt(1, StudentId);
         ResultSet rs = preparedStatement.executeQuery();
 
-        if (rs.next()) {
+        while (rs.next()) {
             student = new Student();
             student.setStudentNumber(rs.getString("student_number"));
             student.setStudentId(rs.getInt("student_id"));
@@ -96,7 +96,7 @@ public class StudentDao {
         preparedStatement.setString(2, studentPassword);
         ResultSet rs = preparedStatement.executeQuery();
 
-        if (rs.next()) {
+        while (rs.next()) {
             student = new Student();
             student.setStudentNumber(rs.getString("student_number"));
             student.setStudentId(rs.getInt("student_id"));
@@ -117,7 +117,7 @@ public class StudentDao {
         preparedStatement.setString(2, studentNumber);
         ResultSet rs = preparedStatement.executeQuery();
 
-        if (rs.next()) {
+        while (rs.next()) {
             student = new Student();
             student.setStudentNumber(rs.getString("student_number"));
             student.setStudentId(rs.getInt("student_id"));

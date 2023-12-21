@@ -1,7 +1,9 @@
 package com.job.controller;
 
 import com.job.dao.CourseDao;
+import com.job.dao.StudentDao;
 import com.job.model.Course;
+import com.job.model.Student;
 import com.job.util.Common;
 import com.job.util.FileProcessor;
 import com.job.util.ResponseData;
@@ -38,11 +40,13 @@ public class CourseController extends BaseController{
         引入接口使用的ORM操作对象
      */
     private final CourseDao courseDao;
+    private final StudentDao studentDao;
 
 
     public CourseController() {
         super();
         this.courseDao = new CourseDao();
+        this.studentDao = new StudentDao();
         this.urlMethodMap.put("queryCourse", "GET");
         this.urlMethodMap.put("addCourse", "POST");
         super.urlMethodMap = urlMethodMap;
@@ -57,9 +61,10 @@ public class CourseController extends BaseController{
             int studentId = Integer.parseInt(userInfo[1]);
             //调用DAO层拿结果
             List<Course> courses = courseDao.queryStuCourse(studentId);
+            Student studentById = studentDao.getStudentById(Integer.parseInt(userInfo[1]));
             //输出到浏览器
             ResponseData responseData = new ResponseData();
-            responseData.writeResponseData(resp,courses.toString(),true);
+            responseData.writeResponseData(resp,courses.toString()+studentById.getStudentName(),true);
         } else if (userInfo[2].equals("teacher")) {
             int teacherId = Integer.parseInt(userInfo[1]);
             //调用DAO层拿结果

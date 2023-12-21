@@ -72,7 +72,7 @@ public class TeacherDao {
         preparedStatement.setInt(1, TeacherId);
         ResultSet rs = preparedStatement.executeQuery();
 
-        if (rs.next()) {
+        while (rs.next()) {
             teacher.setTeacherId(rs.getInt("teacher_id"));
             teacher.setTeacherNumber(rs.getString("teacher_number"));
             teacher.setTeacherName(rs.getString("teacher_name"));
@@ -90,7 +90,7 @@ public class TeacherDao {
         preparedStatement.setString(2, teacherPassword);
         ResultSet rs = preparedStatement.executeQuery();
 
-        if (rs.next()) {
+        while (rs.next()) {
             teacher = new Teacher();
             teacher.setTeacherId(rs.getInt("teacher_id"));
             teacher.setTeacherNumber(rs.getString("teacher_number"));
@@ -110,7 +110,7 @@ public class TeacherDao {
         preparedStatement.setString(2, teacherNumber);
         ResultSet rs = preparedStatement.executeQuery();
 
-        if (rs.next()) {
+        while (rs.next()) {
             teacher.setTeacherNumber(rs.getString("teacher_number"));
             teacher.setTeacherId(rs.getInt("teacher_id"));
             teacher.setTeacherName(rs.getString("teacher_name"));

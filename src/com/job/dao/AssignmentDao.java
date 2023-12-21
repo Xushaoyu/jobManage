@@ -44,7 +44,7 @@ public class AssignmentDao {
         psm.setInt(1,teacherId);
         ResultSet rs = psm.executeQuery();
         List<subDTO> subDTOList = new ArrayList<subDTO>();
-        if (rs.next()) {
+        while (rs.next()) {
             subDTO subDTO = new subDTO();
             subDTO.setSubId(rs.getInt("submission_id"));
             subDTO.setStuId(rs.getInt("student_id"));
@@ -136,7 +136,7 @@ public class AssignmentDao {
         psm.setInt(2, courseId);
         ResultSet rs = psm.executeQuery();
         List<subDTO> subDTOList = new ArrayList<subDTO>();
-        if (rs.next()) {
+        while (rs.next()) {
             subDTO subDTO = new subDTO();
             subDTO.setSubId(rs.getInt("submission_id"));
             subDTO.setStuId(rs.getInt("student_id"));
