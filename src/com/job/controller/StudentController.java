@@ -73,7 +73,7 @@ public class StudentController extends BaseController {
             String password = md5.encode(req.getParameter("password"));
             JSONObject student = studentDao.login(req.getParameter("studentNumber"), password);
             if (student.isEmpty()) {
-                responseData.writeResponseData(resp, "username or password is invalid");
+                responseData.writeResponseData(resp,400,"fail", "username or password is invalid");
             } else {
                 String studentInfo = student.getString("student_number") + "==" + student.getInteger("student_id") + "==student";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(studentInfo));
