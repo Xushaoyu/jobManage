@@ -1,7 +1,7 @@
 package com.job.util;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -11,77 +11,66 @@ import java.util.HashMap;
 public class ResponseData {
 
     public void writeResponseData(HttpServletResponse resp, int code, String message, String data) throws IOException {
-        String ResponseData = "{" +
-                              "code=" + code +
-                              ", message='" + message + '\'' +
-                              ", data='" + data + '\'' +
-                              '}';
+        JSONObject result = new JSONObject();
+        result.put("code", code);
+        result.put("message", message);
+        result.put("data", data);
         resp.setCharacterEncoding("utf-8");
         resp.setContentType("application/json; charset=utf-8");
         PrintWriter writer = resp.getWriter();
-        writer.print(ResponseData);
+        writer.print(result);
         writer.flush();
         writer.close();
     }
 
-    public void writeResponseData(HttpServletResponse resp, int code, String message, String data, Boolean isList) throws IOException {
-        if (isList){
-            String ResponseData = "{" +
-                    "code=" + code +
-                    ", message='" + message + '\'' +
-                    ", data=" + data +
-                    '}';
-            resp.setCharacterEncoding("utf-8");
-            resp.setContentType("application/json; charset=utf-8");
-            PrintWriter writer = resp.getWriter();
-            writer.print(ResponseData);
-            writer.flush();
-            writer.close();
-        }
-    }
-
-    public void writeResponseData(HttpServletResponse resp,String data, Boolean isList) throws IOException {
-        if (isList){
-            String ResponseData = "{" +
-                    "code=" + "200" +
-                    ", message='" + "success" + '\'' +
-                    ", data=" + data +
-                    '}';
-            resp.setCharacterEncoding("utf-8");
-            resp.setContentType("application/json; charset=utf-8");
-            PrintWriter writer = resp.getWriter();
-            writer.print(ResponseData);
-            writer.flush();
-            writer.close();
-        }
+    public void writeResponseData(HttpServletResponse resp, String message, String data) throws IOException {
+        JSONObject result = new JSONObject();
+        result.put("code", 200);
+        result.put("message", message);
+        result.put("data", data);
+        resp.setCharacterEncoding("utf-8");
+        resp.setContentType("application/json; charset=utf-8");
+        PrintWriter writer = resp.getWriter();
+        writer.print(result);
+        writer.flush();
+        writer.close();
     }
 
     public void writeResponseData(HttpServletResponse resp, String data) throws IOException {
-        String ResponseData = "{" +
-                              "code=" + "200" +
-                              ", message='" + "success" + '\'' +
-                              ", data='" + data + '\'' +
-                              '}';
+        JSONObject result = new JSONObject();
+        result.put("code", 200);
+        result.put("message", "success");
+        result.put("data", data);
         resp.setCharacterEncoding("utf-8");
         resp.setContentType("application/json; charset=utf-8");
         PrintWriter writer = resp.getWriter();
-        writer.print(ResponseData);
+        writer.print(result);
         writer.flush();
         writer.close();
     }
 
-    public void writeResponseData(HttpServletResponse resp, HashMap<String, String> data) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        // 创建一个对象节点
-        ObjectNode result = objectMapper.createObjectNode();
-        result.put("code", "200");
+    public void writeResponseData(HttpServletResponse resp, JSONObject data) throws IOException {
+        JSONObject result = new JSONObject();
+        result.put("code", 200);
         result.put("message", "success");
-        result.put("data", String.valueOf(data));
+        result.put("data", data);
         resp.setCharacterEncoding("utf-8");
         resp.setContentType("application/json; charset=utf-8");
         PrintWriter writer = resp.getWriter();
-        writer.print(objectMapper.writeValueAsString(result));
+        writer.print(result);
+        writer.flush();
+        writer.close();
+    }
+
+    public void writeResponseData(HttpServletResponse resp, JSONArray data) throws IOException {
+        JSONObject result = new JSONObject();
+        result.put("code", 200);
+        result.put("message", "success");
+        result.put("data", data);
+        resp.setCharacterEncoding("utf-8");
+        resp.setContentType("application/json; charset=utf-8");
+        PrintWriter writer = resp.getWriter();
+        writer.print(result);
         writer.flush();
         writer.close();
     }

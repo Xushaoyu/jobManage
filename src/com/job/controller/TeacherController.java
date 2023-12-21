@@ -1,6 +1,7 @@
 package com.job.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.job.dao.AssignmentDao;
 import com.job.dao.SubmissionDao;
 import com.job.dao.TeacherDao;
@@ -59,10 +60,10 @@ public class TeacherController extends BaseController {
     public void queryTeacherById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
         try {
-            Teacher teacher = teacherDao.getTeacherById(Integer.parseInt(req.getParameter("teacherId")));
-            responseData.writeResponseData(resp, teacher.toString());
+            JSONObject teacher = teacherDao.getTeacherById(Integer.parseInt(req.getParameter("teacherId")));
+            responseData.writeResponseData(resp, teacher);
         } catch (SQLException e) {
-            responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
+            responseData.writeResponseData(resp, 400, "false", e.getMessage());
         }
     }
 
@@ -72,17 +73,17 @@ public class TeacherController extends BaseController {
         MD5Generate md5 = new MD5Generate();
         try {
             String password = md5.encode(req.getParameter("teacherPassword"));
-            Teacher teacher = teacherDao.login(req.getParameter("teacherNumber"), password);
+            JSONObject teacher = teacherDao.login(req.getParameter("teacherNumber"), password);
             if (teacher == null) {
-                responseData.writeResponseData(resp, "username or password is invalid");
+                responseData.writeResponseData(resp, "false", "username or password is invalid");
             } else {
-                String teacherInfo= teacher.getTeacherNumber() + "==" + teacher.getTeacherId() + "==teacher";
+                String teacherInfo= teacher.getString("teacher_number") + "==" + teacher.getInteger("teacher_id") + "==teacher";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(teacherInfo));
                 cookie.setMaxAge(60 * 60 * 24);
-                cookie.setSecure(true);  // 设置为 true 表示仅在使用 HTTPS 时发送
                 cookie.setPath("/");  // 设置路径
                 resp.addCookie(cookie);
-                responseData.writeResponseData(resp, teacher.getResult());
+                responseData.writeResponseData(resp, teacher);
+
             }
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());

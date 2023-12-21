@@ -1,5 +1,7 @@
 package com.job.model;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -92,9 +94,9 @@ public class Teacher {
                 '}';
     }
 
-    public HashMap<String, String> getResult() {
-        HashMap<String, String> result = new HashMap<>();
-        result.put("teacherId", String.valueOf(teacherId));
+    public JSONObject getResult() {
+        JSONObject result = new JSONObject();
+        result.put("teacherId", teacherId);
         result.put("teacherNumber", teacherNumber);
         result.put("teacherName", teacherName);
         return result;
