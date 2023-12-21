@@ -79,8 +79,10 @@ public class TeacherController extends BaseController {
                 String teacherInfo= teacher.getTeacherNumber() + "==" + teacher.getTeacherId() + "==teacher";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(teacherInfo));
                 cookie.setMaxAge(60 * 60 * 24);
+                cookie.setSecure(true);  // 设置为 true 表示仅在使用 HTTPS 时发送
+                cookie.setPath("/");  // 设置路径
                 resp.addCookie(cookie);
-                responseData.writeResponseData(resp, "登录成功");
+                responseData.writeResponseData(resp, teacher.getResult());
             }
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());

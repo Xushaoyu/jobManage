@@ -12,6 +12,7 @@ public class Student {
 	private String studentClass;
 	private Date updateTime;
 	private Date createTime;
+	private String picture;
 
 	public int getStudentId() {
 		return studentId;
@@ -76,9 +77,18 @@ public class Student {
 		return this;
 	}
 
+	public String getPicture() {
+		return picture;
+	}
+
+	public Student setPicture(String picture) {
+		this.picture = picture;
+		return this;
+	}
+
 	@Override
 	public String toString() {
-		return "Student{" +
+		return "{" +
 				"studentId=" + studentId +
 				", studentNumber=" + studentNumber +
 				", studentName='" + studentName + '\'' +

@@ -29,6 +29,11 @@ public class BaseController extends HttpServlet {
     方法映射
      */
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        resp.setHeader("Access-Control-Allow-Origin", "http://localhost:8020");  // 允许的域
+        resp.setHeader("Access-Control-Allow-Credentials", "true");  // 允许包含凭据（cookie）
+        resp.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");  // 允许的方法
+        resp.setHeader("Access-Control-Allow-Headers", "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range");  // 允许的头部信息
+
         String method = req.getMethod();
         // 获取请求的URI地址信息
         String url = req.getRequestURI();

@@ -78,7 +78,7 @@ public class StudentController extends BaseController {
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(studentInfo));
                 cookie.setMaxAge(60 * 60 * 24);
                 resp.addCookie(cookie);
-                responseData.writeResponseData(resp, "登录成功");
+                responseData.writeResponseData(resp, student.toString());
             }
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());

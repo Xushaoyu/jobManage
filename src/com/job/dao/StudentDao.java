@@ -104,6 +104,7 @@ public class StudentDao {
             student.setStudentClass(rs.getString("student_class"));
             student.setUpdateTime(rs.getDate("update_time"));
             student.setCreateTime(rs.getDate("create_time"));
+            student.setPicture(rs.getString("picture"));
         }
         return student;
     }

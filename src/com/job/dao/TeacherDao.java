@@ -97,6 +97,7 @@ public class TeacherDao {
             teacher.setTeacherName(rs.getString("teacher_name"));
             teacher.setUpdateTime(rs.getDate("update_time"));
             teacher.setCreateTime(rs.getDate("create_time"));
+            teacher.setPicture(rs.getString("picture"));
         }
         return teacher;
     }
