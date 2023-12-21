@@ -1,5 +1,6 @@
 package com.job.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.job.dao.StudentDao;
 import com.job.model.Student;
 import com.job.util.*;
@@ -51,11 +52,11 @@ public class StudentController extends BaseController {
     public void queryStudentById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
         try {
-            Student student = studentDao.getStudentById(Integer.parseInt(req.getParameter("studentId")));
-            if (student == null){
+            JSONObject student = studentDao.getStudentById(Integer.parseInt(req.getParameter("studentId")));
+            if (student.isEmpty()){
                 responseData.writeResponseData(resp, 400, "student not found", null);
             } else {
-                responseData.writeResponseData(resp, student.toString());
+                responseData.writeResponseData(resp, student);
             }
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
@@ -70,16 +71,16 @@ public class StudentController extends BaseController {
         MD5Generate md5 = new MD5Generate();
         try {
             String password = md5.encode(req.getParameter("password"));
-            Student student = studentDao.login(req.getParameter("studentNumber"), password);
-            if (student == null) {
+            JSONObject student = studentDao.login(req.getParameter("studentNumber"), password);
+            if (student.isEmpty()) {
                 responseData.writeResponseData(resp, "username or password is invalid");
             } else {
-                String studentInfo = student.getStudentNumber() + "==" + student.getStudentId() + "==student";
+                String studentInfo = student.getString("student_number") + "==" + student.getInteger("student_id") + "==student";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(studentInfo));
                 cookie.setMaxAge(60 * 60 * 24);
                 cookie.setPath("/"); // 设置Cookie的路径为根路径
                 resp.addCookie(cookie);
-                responseData.writeResponseData(resp, "登录成功");
+                responseData.writeResponseData(resp, student.toString());
             }
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());

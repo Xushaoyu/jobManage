@@ -1,12 +1,9 @@
 package com.job.controller;
 
 
-import com.job.dao.AssignmentDao;
-import com.job.dao.SubmissionDao;
+import com.alibaba.fastjson.JSONObject;
 import com.job.dao.TeacherDao;
-import com.job.model.Assignment;
 import com.job.model.Teacher;
-import com.job.model.subDTO;
 import com.job.util.*;
 
 import javax.servlet.annotation.WebServlet;
@@ -14,14 +11,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 
 @WebServlet("/teacher/*")
 public class TeacherController extends BaseController {
@@ -59,8 +50,8 @@ public class TeacherController extends BaseController {
     public void queryTeacherById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
         try {
-            Teacher teacher = teacherDao.getTeacherById(Integer.parseInt(req.getParameter("teacherId")));
-            responseData.writeResponseData(resp, teacher.toString());
+            JSONObject teacher = teacherDao.getTeacherById(Integer.parseInt(req.getParameter("teacherId")));
+            responseData.writeResponseData(resp, teacher);
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
         }
@@ -72,16 +63,17 @@ public class TeacherController extends BaseController {
         MD5Generate md5 = new MD5Generate();
         try {
             String password = md5.encode(req.getParameter("teacherPassword"));
-            Teacher teacher = teacherDao.login(req.getParameter("teacherNumber"), password);
-            if (teacher == null) {
-                responseData.writeResponseData(resp, "username or password is invalid");
+            JSONObject teacher = teacherDao.login(req.getParameter("teacherNumber"), password);
+            if (teacher.isEmpty()) {
+                responseData.writeResponseData(resp, "false", "username or password is invalid");
             } else {
-                String teacherInfo= teacher.getTeacherNumber() + "==" + teacher.getTeacherId() + "==teacher";
+                String teacherInfo= teacher.getString("teacher_number") + "==" + teacher.getInteger("teacher_id") + "==teacher";
                 Cookie cookie = new Cookie("jobCookie", Base64Util.encryptBASE64(teacherInfo));
                 cookie.setMaxAge(60 * 60 * 24);
                 cookie.setPath("/");  // 设置路径
                 resp.addCookie(cookie);
-                responseData.writeResponseData(resp, "登录成功");
+                responseData.writeResponseData(resp, teacher);
+
             }
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());

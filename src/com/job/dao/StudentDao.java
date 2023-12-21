@@ -1,5 +1,6 @@
 package com.job.dao;
 
+import com.alibaba.fastjson.JSONObject;
 import com.job.model.Student;
 import com.job.util.DBUtil;
 
@@ -69,27 +70,26 @@ public class StudentDao {
         return students;
     }
 
-    public Student getStudentById(int StudentId) throws SQLException {
-        Student student = null;
+    public JSONObject getStudentById(int StudentId) throws SQLException {
+        JSONObject student = new JSONObject();;
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from students where student_id=?");
         preparedStatement.setInt(1, StudentId);
         ResultSet rs = preparedStatement.executeQuery();
 
         if (rs.next()) {
-            student = new Student();
-            student.setStudentNumber(rs.getString("student_number"));
-            student.setStudentId(rs.getInt("student_id"));
-            student.setStudentName(rs.getString("student_name"));
-            student.setStudentClass(rs.getString("student_class"));
-            student.setUpdateTime(rs.getDate("update_time"));
-            student.setCreateTime(rs.getDate("create_time"));
+            student.put("student_number", rs.getString("student_number"));
+            student.put("student_id", rs.getInt("student_id"));
+            student.put("student_name", rs.getString("student_name"));
+            student.put("student_class", rs.getString("student_class"));
+            student.put("update_time", rs.getDate("update_time"));
+            student.put("create_time", rs.getDate("create_time"));
         }
         return student;
     }
 
-    public Student login(String studentNumber, String studentPassword) throws SQLException {
-        Student student = null;
+    public JSONObject login(String studentNumber, String studentPassword) throws SQLException {
+        JSONObject student = new JSONObject();
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from students where student_number=? and student_password=?");
         preparedStatement.setString(1, studentNumber);
@@ -97,20 +97,19 @@ public class StudentDao {
         ResultSet rs = preparedStatement.executeQuery();
 
         if (rs.next()) {
-            student = new Student();
-            student.setStudentNumber(rs.getString("student_number"));
-            student.setStudentId(rs.getInt("student_id"));
-            student.setStudentName(rs.getString("student_name"));
-            student.setStudentClass(rs.getString("student_class"));
-            student.setUpdateTime(rs.getDate("update_time"));
-            student.setCreateTime(rs.getDate("create_time"));
+            student.put("student_number", rs.getString("student_number"));
+            student.put("student_id", rs.getInt("student_id"));
+            student.put("student_name", rs.getString("student_name"));
+            student.put("student_class", rs.getString("student_class"));
+            student.put("update_time", rs.getDate("update_time"));
+            student.put("create_time", rs.getDate("create_time"));
+            student.put("picture", rs.getString("picture"));
         }
         return student;
     }
 
-    public Student verify(int studentId, String studentNumber) throws SQLException {
-        Student student = new Student();
-        student.setStudentId(0);
+    public JSONObject verify(int studentId, String studentNumber) throws SQLException {
+        JSONObject student = new JSONObject();
         PreparedStatement preparedStatement = connection.
                 prepareStatement("select * from students where student_id=? and student_number=?");
         preparedStatement.setInt(1, studentId);
@@ -118,13 +117,12 @@ public class StudentDao {
         ResultSet rs = preparedStatement.executeQuery();
 
         if (rs.next()) {
-            student = new Student();
-            student.setStudentNumber(rs.getString("student_number"));
-            student.setStudentId(rs.getInt("student_id"));
-            student.setStudentName(rs.getString("student_name"));
-            student.setStudentClass(rs.getString("student_class"));
-            student.setUpdateTime(rs.getDate("update_time"));
-            student.setCreateTime(rs.getDate("create_time"));
+            student.put("student_number", rs.getString("student_number"));
+            student.put("student_id", rs.getInt("student_id"));
+            student.put("student_name", rs.getString("student_name"));
+            student.put("student_class", rs.getString("student_class"));
+            student.put("update_time", rs.getDate("update_time"));
+            student.put("create_time", rs.getDate("create_time"));
         }
         return student;
     }
