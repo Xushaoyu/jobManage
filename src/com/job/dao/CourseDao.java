@@ -25,7 +25,7 @@ public class CourseDao {
         psm.setInt(1, studentId);
         ResultSet rs = psm.executeQuery();
         JSONArray courses = new JSONArray();
-        if (rs.next()) {
+        while (rs.next()) {
             Course course = new Course();
             course.setCourseName(rs.getString("course_name"));
             course.setCourseImgUrl(rs.getString("course_img_url"));
@@ -39,7 +39,7 @@ public class CourseDao {
         psm.setInt(1, teacherId);
         ResultSet rs = psm.executeQuery();
         JSONArray courses = new JSONArray();
-        if (rs.next()) {
+        while (rs.next()) {
             Course course = new Course();
             course.setCourseName(rs.getString("course_name"));
             course.setCourseImgUrl(rs.getString("course_img_url"));
