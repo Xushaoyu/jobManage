@@ -1,6 +1,7 @@
 package com.job.dao;
 
 import com.alibaba.fastjson.JSONArray;
+import com.job.model.Course;
 import com.job.model.Note;
 import com.job.util.DBUtil;
 

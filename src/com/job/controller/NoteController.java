@@ -1,15 +1,20 @@
 package com.job.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.job.dao.CourseDao;
 import com.job.dao.NoteDao;
+import com.job.model.Course;
 import com.job.model.Note;
 import com.job.util.Common;
+import com.job.util.FileProcessor;
 import com.job.util.ResponseData;
 
-
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
