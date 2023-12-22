@@ -65,6 +65,7 @@ public class StudentDao {
             student.setStudentClass(rs.getString("student_class"));
             student.setUpdateTime(rs.getDate("update_time"));
             student.setCreateTime(rs.getDate("create_time"));
+            student.setPicture(rs.getString("picture"));
             students.add(student);
         }
         return students;
@@ -84,6 +85,7 @@ public class StudentDao {
             student.put("student_class", rs.getString("student_class"));
             student.put("update_time", rs.getDate("update_time"));
             student.put("create_time", rs.getDate("create_time"));
+            student.put("picture", rs.getString("picture"));
         }
         return student;
     }

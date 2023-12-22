@@ -51,15 +51,18 @@ public class StudentController extends BaseController {
      */
     public void queryStudentById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
+        String[] userInfo = Common.getUserInfoFromCookies(req);
+        assert userInfo != null;
         try {
-            JSONObject student = studentDao.getStudentById(Integer.parseInt(req.getParameter("studentId")));
+            int studentId = Integer.parseInt(userInfo[1]);
+            JSONObject student = studentDao.getStudentById(studentId);
             if (student.isEmpty()){
                 responseData.writeResponseData(resp, 400, "student not found", null);
             } else {
                 responseData.writeResponseData(resp, student);
             }
-        } catch (SQLException e) {
-            responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
+        } catch (Exception e) {
+            responseData.writeResponseData(resp, 400, "error", e.getMessage());
         }
     }
 
@@ -80,7 +83,7 @@ public class StudentController extends BaseController {
                 cookie.setMaxAge(60 * 60 * 24);
                 cookie.setPath("/"); // 设置Cookie的路径为根路径
                 resp.addCookie(cookie);
-                responseData.writeResponseData(resp, student);
+                responseData.writeResponseData(resp, "登录成功");
             }
         } catch (SQLException e) {
             responseData.writeResponseData(resp, 400, "sql error", e.getMessage());

@@ -94,8 +94,7 @@ public class AssignmentDao {
 
     //通过课程id和学生id查看作业
     public JSONArray queryWorkByCourseStuId(int courseId, int studentId) throws SQLException {
-        PreparedStatement psm = connection.prepareStatement("select ass.assignment_id,ass.assignment_title, ass.assignment_description, " +
-                "ass.assignment_deadline, ass.assignment_subject " +
+        PreparedStatement psm = connection.prepareStatement("select ass.*" +
                 "from assignments ass JOIN students stu on" +
                 " ass.assignment_class = stu.student_class where stu.student_id = ? and ass.course_id = ?");
         psm.setInt(1,studentId);
@@ -109,6 +108,11 @@ public class AssignmentDao {
             assignmentDTO.setAssignmentDescription(rs.getString("assignment_description"));
             assignmentDTO.setAssignmentDeadLine(rs.getDate("assignment_deadline"));
             assignmentDTO.setAssignmentSubject(rs.getString("assignment_subject"));
+            assignmentDTO.setAssignmentClass(rs.getString("assignment_class"));
+            assignmentDTO.setTeaId(rs.getInt("tea_id"));
+            assignmentDTO.setCourseID(rs.getInt("course_id"));
+            assignmentDTO.setCreateTime(rs.getDate("create_time"));
+            assignmentDTO.setUpdateTime(rs.getDate("update_time"));
             assignmentDTOS.add(assignmentDTO);
         }
         return assignmentDTOS;
