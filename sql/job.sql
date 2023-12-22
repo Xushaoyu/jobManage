@@ -117,7 +117,7 @@ DROP TABLE IF EXISTS `assignments`;
 CREATE TABLE `assignments` (
                                `assignment_id` int(11) NOT NULL AUTO_INCREMENT,
                                `assignment_title` varchar(255) DEFAULT NULL,
-                               `assignment_description` varchar(255) DEFAULT NULL,
+                               `assignment_description` text DEFAULT NULL,
                                `assignment_deadline` date DEFAULT NULL,
                                `assignment_subject` varchar(255) DEFAULT NULL,
                                `assignment_class` varchar(255) DEFAULT NULL,
@@ -251,6 +251,7 @@ CREATE TABLE `submissions` (
                                `submission_date` date DEFAULT NULL,
                                `score` varchar(255) DEFAULT NULL,
                                `file_path` varchar(255) DEFAULT NULL,
+                               `content` text DEFAULT NULL,
                                `update_time` date DEFAULT NULL,
                                `create_time` date DEFAULT NULL,
                                `status` int(1) DEFAULT '0' COMMENT '0代表未提交，1代表已提交，2代表已批改',
@@ -265,21 +266,21 @@ CREATE TABLE `submissions` (
 -- ----------------------------
 -- Records of submissions
 -- ----------------------------
-INSERT INTO `submissions` VALUES ('1', '5', '11', '2023-12-08', '12', 'http://localhost:8080/jobManage/assignment/README.md', '2023-12-01', '2023-12-01', '2');
-INSERT INTO `submissions` VALUES ('2', '6', '11', '2023-12-08', '10', 'http://localhost:8080/jobManage/assignment/job.sql', '2023-12-08', '2023-12-08', '2');
-INSERT INTO `submissions` VALUES ('3', '7', '11', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('4', '8', '11', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('5', '9', '11', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('6', '10', '11', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('7', '5', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('8', '6', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('9', '7', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('10', '8', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('11', '9', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('12', '10', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('13', '5', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('14', '6', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('15', '7', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('16', '8', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('17', '9', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', '2023-12-20', '2023-12-20', '1');
-INSERT INTO `submissions` VALUES ('18', '10', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('1', '5', '11', '2023-12-08', '12', 'http://localhost:8080/jobManage/assignment/README.md', null, '2023-12-01', '2023-12-01', '2');
+INSERT INTO `submissions` VALUES ('2', '6', '11', '2023-12-08', '10', 'http://localhost:8080/jobManage/assignment/job.sql', null, '2023-12-08', '2023-12-08', '2');
+INSERT INTO `submissions` VALUES ('3', '7', '11', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('4', '8', '11', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('5', '9', '11', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('6', '10', '11', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('7', '5', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('8', '6', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('9', '7', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('10', '8', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('11', '9', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('12', '10', '12', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('13', '5', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('14', '6', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('15', '7', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('16', '8', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('17', '9', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/README.md', null, '2023-12-20', '2023-12-20', '1');
+INSERT INTO `submissions` VALUES ('18', '10', '13', '2023-12-20', null, 'http://localhost:8080/jobManage/assignment/job.sql', null, '2023-12-20', '2023-12-20', '1');

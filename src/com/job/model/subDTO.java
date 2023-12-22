@@ -10,6 +10,7 @@ public class subDTO {
     String assignTitle;
     Date subDate;
     String filePath;
+    String content;
     int status;
 
     @Override
@@ -80,6 +81,15 @@ public class subDTO {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public subDTO setContent(String content) {
+        this.content = content;
+        return this;
     }
 
     public int getStatus() {
