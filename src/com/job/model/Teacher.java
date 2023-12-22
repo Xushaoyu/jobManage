@@ -11,7 +11,6 @@ public class Teacher {
     private String teacherNumber;
     private String teacherPassword;
     private String teacherName;
-    private int teacherAssignmentId;
     private Date updateTime;
     private Date createTime;
     private String picture;
@@ -48,13 +47,6 @@ public class Teacher {
         this.teacherName = teacherName;
     }
 
-    public int getTeacherAssignmentId() {
-        return teacherAssignmentId;
-    }
-
-    public void setTeacherAssignmentId(int teacherAssignmentId) {
-        this.teacherAssignmentId = teacherAssignmentId;
-    }
 
     public Date getUpdateTime() {
         return updateTime;
@@ -88,7 +80,6 @@ public class Teacher {
                 ", teacherNumber=" + teacherNumber +
                 ", teacherPassword='" + teacherPassword + '\'' +
                 ", teacherName='" + teacherName + '\'' +
-                ", teacherAssignmentId=" + teacherAssignmentId +
                 ", updateTime=" + updateTime +
                 ", createTime=" + createTime +
                 '}';
