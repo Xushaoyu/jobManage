@@ -75,8 +75,10 @@ public class TeacherDao {
         while (rs.next()) {
             teacher.put("teacher_id", rs.getInt("teacher_id"));
             teacher.put("teacher_number", rs.getString("teacher_number"));
+            teacher.put("teacher_name", rs.getString("teacher_name"));
             teacher.put("update_time", rs.getDate("update_time"));
             teacher.put("create_time", rs.getDate("create_time"));
+            teacher.put("picture", rs.getString("picture"));
         }
         return teacher;
     }

@@ -49,11 +49,18 @@ public class TeacherController extends BaseController {
     //通过id查找老师
     public void queryTeacherById(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         ResponseData responseData = new ResponseData();
+        String[] userInfo = Common.getUserInfoFromCookies(req);
+        assert userInfo != null;
         try {
-            JSONObject teacher = teacherDao.getTeacherById(Integer.parseInt(req.getParameter("teacherId")));
-            responseData.writeResponseData(resp, teacher);
-        } catch (SQLException e) {
-            responseData.writeResponseData(resp, 400, "sql error", e.getMessage());
+            int teacherId = Integer.parseInt(userInfo[1]);
+            JSONObject teacher = teacherDao.getTeacherById(teacherId);
+            if (teacher.isEmpty()){
+                responseData.writeResponseData(resp, 400, "teacher not found", null);
+            } else {
+                responseData.writeResponseData(resp, teacher);
+            }
+        } catch (Exception e) {
+            responseData.writeResponseData(resp, 400, "error", e.getMessage());
         }
     }
 
