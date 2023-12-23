@@ -83,6 +83,7 @@ public class AssignmentController  extends BaseController{
         assignment.setAssignmentDeadLine(dateFormat.parse(req.getParameter("assignmentDeadLine")));
         assignment.setAssignmentSubject(req.getParameter("assignmentSubject"));
         assignment.setAssignmentClass(req.getParameter("assignmentClass"));
+        assignment.setCourseID(Integer.parseInt(req.getParameter("courseId")));
         String[] userInfo = Common.getUserInfoFromCookies(req);
         assert userInfo != null;
         assignment.setTeaId(Integer.parseInt(userInfo[1]));

@@ -20,8 +20,8 @@ public class AssignmentDao {
         Date date = new java.sql.Date(System.currentTimeMillis());
         PreparedStatement preparedStatement = connection
                 .prepareStatement("insert into assignments(assignment_title, assignment_description, assignment_deadline, " +
-                        "assignment_subject, assignment_class, tea_id, update_time, create_time) " +
-                        "values (?, ?, ?, ?, ?, ?, ?, ?)");
+                        "assignment_subject, assignment_class, tea_id, update_time, create_time, course_id) " +
+                        "values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         // Parameters start with 1
         preparedStatement.setString(1, assignment.getAssignmentTitle());
         preparedStatement.setString(2, assignment.getAssignmentDescription());
@@ -33,6 +33,7 @@ public class AssignmentDao {
         preparedStatement.setInt(6, assignment.getTeaId());
         preparedStatement.setDate(7, date);
         preparedStatement.setDate(8, date);
+        preparedStatement.setInt(9, assignment.getCourseID());
         preparedStatement.executeUpdate();
     }
     //老师查看已提交的作业
