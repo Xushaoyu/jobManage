@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 @WebServlet("/submission/*")
 @MultipartConfig
-public class SubmissionController  extends BaseController{
+public class SubmissionController extends BaseController {
     /*
     生成接口唯一标识符
  */
@@ -65,21 +65,27 @@ public class SubmissionController  extends BaseController{
 
         // 获取上传文件文件的输入流
         String pathDir = "assignment";
-        Part filePart = req.getPart("file");
-        String staticFilePath = new File(getServletContext().getRealPath("")).getParentFile().getParentFile().getParentFile()+ File.separator + "statics";
-        String uploadDirectory = staticFilePath +  File.separator + pathDir;
-        FileProcessor fileProcessor = new FileProcessor(uploadDirectory);
-        // 在需要的地方调用 FileProcessor 的方法
-        String fileName = fileProcessor.processFile(filePart);
-        if (fileName.equals("")) {
-            responseData.writeResponseData(resp, 400, "文件流处理失败", "upload fail");
+        String fileUrl = "";
+        String content = "";
+        if (req.getParameter("content") != null) {
+            content = req.getParameter("content");
         }
-        String fileUrl = this.nginxUrl + pathDir + "/" + fileName;
-
+        Part filePart = req.getPart("file");
+        if (filePart != null) {
+            String staticFilePath = new File(getServletContext().getRealPath("")).getParentFile().getParentFile().getParentFile() + File.separator + "statics";
+            String uploadDirectory = staticFilePath + File.separator + pathDir;
+            FileProcessor fileProcessor = new FileProcessor(uploadDirectory);
+            // 在需要的地方调用 FileProcessor 的方法
+            String fileName = fileProcessor.processFile(filePart);
+            if (fileName.equals("")) {
+                responseData.writeResponseData(resp, 400, "文件流处理失败", "upload fail");
+            }
+            fileUrl = this.nginxUrl + pathDir + "/" + fileName;
+        }
 
         subdto.setStuId(studentId);
         subdto.setAssignmentId(Integer.parseInt(req.getParameter("assignmentId")));
-        subdto.setContent(req.getParameter("content"));
+        subdto.setContent(content);
         subdto.setFilePath(fileUrl);
         //修改作业,1为已提交
         subdto.setStatus(1);
@@ -108,7 +114,7 @@ public class SubmissionController  extends BaseController{
         try {
             JSONObject sub = submissionDao.getSubmissionById(submissionId);
             responseData.writeResponseData(resp, sub);
-        }catch (Exception e){
+        } catch (Exception e) {
             responseData.writeResponseData(resp, 400, "fail", e.getMessage());
         }
     }
