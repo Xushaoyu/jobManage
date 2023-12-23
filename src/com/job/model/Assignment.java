@@ -7,7 +7,6 @@ public class Assignment {
     private String assignmentTitle;
     private String assignmentDescription;
     private Date assignmentDeadLine;
-    private String assignmentSubject;
     private String assignmentClass;
     private int teaId;
 
@@ -22,7 +21,6 @@ public class Assignment {
                 ", assignmentTitle='" + assignmentTitle + '\'' +
                 ", assignmentDescription='" + assignmentDescription + '\'' +
                 ", assignmentDeadLine=" + assignmentDeadLine +
-                ", assignmentSubject='" + assignmentSubject + '\'' +
                 ", assignmentClass='" + assignmentClass + '\'' +
                 ", teaId=" + teaId +
                 ", courseID=" + courseID +
@@ -63,13 +61,6 @@ public class Assignment {
         this.assignmentDeadLine = assignmentDeadLine;
     }
 
-    public String getAssignmentSubject() {
-        return assignmentSubject;
-    }
-
-    public void setAssignmentSubject(String assignmentSubject) {
-        this.assignmentSubject = assignmentSubject;
-    }
 
     public String getAssignmentClass() {
         return assignmentClass;

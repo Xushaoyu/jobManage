@@ -20,7 +20,7 @@ public class AssignmentDao {
         Date date = new java.sql.Date(System.currentTimeMillis());
         PreparedStatement preparedStatement = connection
                 .prepareStatement("insert into assignments(assignment_title, assignment_description, assignment_deadline, " +
-                        "assignment_subject, assignment_class, tea_id, update_time, create_time, course_id) " +
+                        "assignment_class, tea_id, update_time, create_time, course_id) " +
                         "values (?, ?, ?, ?, ?, ?, ?, ?, ?)");
         // Parameters start with 1
         preparedStatement.setString(1, assignment.getAssignmentTitle());
@@ -28,12 +28,11 @@ public class AssignmentDao {
         //把java的date转成sql的date,会丢失时分秒
         java.sql.Date deadLineDate = new java.sql.Date(assignment.getAssignmentDeadLine().getTime());
         preparedStatement.setDate(3, deadLineDate);
-        preparedStatement.setString(4, assignment.getAssignmentSubject());
-        preparedStatement.setString(5, assignment.getAssignmentClass());
-        preparedStatement.setInt(6, assignment.getTeaId());
+        preparedStatement.setString(4, assignment.getAssignmentClass());
+        preparedStatement.setInt(5, assignment.getTeaId());
+        preparedStatement.setDate(6, date);
         preparedStatement.setDate(7, date);
-        preparedStatement.setDate(8, date);
-        preparedStatement.setInt(9, assignment.getCourseID());
+        preparedStatement.setInt(8, assignment.getCourseID());
         preparedStatement.executeUpdate();
     }
     //老师查看已提交的作业
@@ -74,7 +73,6 @@ public class AssignmentDao {
             assignmentDTO.put("assignment_title", rs.getString("assignment_title"));
             assignmentDTO.put("assignment_description", rs.getString("assignment_description"));
             assignmentDTO.put("assignment_deadline", rs.getDate("assignment_deadline"));
-            assignmentDTO.put("assignment_subject", rs.getString("assignment_subject"));
             assignmentDTOS.add(assignmentDTO);
         }
         return assignmentDTOS;
@@ -108,7 +106,6 @@ public class AssignmentDao {
             assignmentDTO.setAssignmentTitle(rs.getString("assignment_title"));
             assignmentDTO.setAssignmentDescription(rs.getString("assignment_description"));
             assignmentDTO.setAssignmentDeadLine(rs.getDate("assignment_deadline"));
-            assignmentDTO.setAssignmentSubject(rs.getString("assignment_subject"));
             assignmentDTO.setAssignmentClass(rs.getString("assignment_class"));
             assignmentDTO.setTeaId(rs.getInt("tea_id"));
             assignmentDTO.setCourseID(rs.getInt("course_id"));

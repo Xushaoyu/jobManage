@@ -119,7 +119,6 @@ CREATE TABLE `assignments` (
                                `assignment_title` varchar(255) DEFAULT NULL,
                                `assignment_description` text DEFAULT NULL,
                                `assignment_deadline` date DEFAULT NULL,
-                               `assignment_subject` varchar(255) DEFAULT NULL,
                                `assignment_class` varchar(255) DEFAULT NULL,
                                `tea_id` int(11) DEFAULT NULL,
                                `course_id` int(11) DEFAULT NULL,
@@ -169,7 +168,7 @@ DROP TABLE IF EXISTS `note`;
 CREATE TABLE `note` (
                         `note_id` int(11) NOT NULL AUTO_INCREMENT,
                         `student_id` int(11) DEFAULT NULL,
-                        `content` varchar(255) DEFAULT NULL,
+                        `content` text DEFAULT NULL,
                         `create_time` date DEFAULT NULL,
                         PRIMARY KEY (`note_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
