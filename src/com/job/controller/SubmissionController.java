@@ -109,7 +109,7 @@ public class SubmissionController extends BaseController {
 
 
     public void getSubmission(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        int submissionId = Integer.parseInt(req.getParameter("submission_id"));
+        int submissionId = Integer.parseInt(req.getParameter("submissionId"));
         ResponseData responseData = new ResponseData();
         try {
             JSONObject sub = submissionDao.getSubmissionById(submissionId);

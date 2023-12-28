@@ -1,26 +1,16 @@
 package com.job.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.job.dao.CourseDao;
 import com.job.dao.NoteDao;
-import com.job.dao.StudentDao;
-import com.job.model.Course;
-import com.job.model.Note;
 import com.job.util.Common;
-import com.job.util.FileProcessor;
 import com.job.util.ResponseData;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 
 @WebServlet("/note/*")
 public class NoteController  extends BaseController{
@@ -43,13 +33,11 @@ public class NoteController  extends BaseController{
         引入接口使用的ORM操作对象
      */
     private final NoteDao noteDao;
-    private final StudentDao studentDao;
 
 
     public NoteController() {
         super();
         this.noteDao = new NoteDao();
-        this.studentDao = new StudentDao();
         this.urlMethodMap.put("queryNote", "GET");
         this.urlMethodMap.put("deleteNote", "POST");
         this.urlMethodMap.put("saveNote", "POST");

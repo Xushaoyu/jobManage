@@ -4,7 +4,6 @@ package com.job.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.job.dao.AssignmentDao;
 
-import com.job.dao.SubmissionDao;
 import com.job.model.Assignment;
 import com.job.util.Common;
 import com.job.util.ResponseData;
@@ -42,12 +41,10 @@ public class AssignmentController  extends BaseController{
         引入接口使用的ORM操作对象
      */
     private final AssignmentDao assignmentDao;
-    private final SubmissionDao submissionDao;
 
 
     public AssignmentController() {
         super();
-        this.submissionDao = new SubmissionDao();
         this.assignmentDao = new AssignmentDao();
         this.urlMethodMap.put("queryWork", "GET");
         this.urlMethodMap.put("publishJob", "POST");
@@ -131,7 +128,7 @@ public class AssignmentController  extends BaseController{
     }
 
     //通过课程id和学生id查看作业
-    public void queryWorkByCourseStuId(HttpServletRequest req, HttpServletResponse resp) throws ParseException, IOException {
+    public void queryWorkByCourseStuId(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int courseId = Integer.parseInt(req.getParameter("courseId"));
         String[] userInfo = Common.getUserInfoFromCookies(req);
         ResponseData responseData = new ResponseData();
@@ -145,7 +142,7 @@ public class AssignmentController  extends BaseController{
         }
     }
 
-    public void queryStatus(HttpServletRequest req, HttpServletResponse resp) throws ParseException, IOException {
+    public void queryStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String[] STATUS = {"未完成", "已提交", "已完成"};
         int assignmentId = Integer.parseInt(req.getParameter("assignmentId"));
         ResponseData responseData = new ResponseData();
@@ -158,7 +155,7 @@ public class AssignmentController  extends BaseController{
     }
 
     //通过课程id和老师id查看提交的作业
-    public void querySubWorkByCourseTeaId(HttpServletRequest req, HttpServletResponse resp) throws ParseException, IOException {
+    public void querySubWorkByCourseTeaId(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         int courseId = Integer.parseInt(req.getParameter("courseId"));
         String[] userInfo = Common.getUserInfoFromCookies(req);
         ResponseData responseData = new ResponseData();
